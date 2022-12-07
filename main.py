@@ -1,4 +1,5 @@
 from board import Board
+from config import *
 
-# We create the board and that's all
-board = Board(255,255)
+# Creamos el tablero.
+board = Board(BOARD_SIZE[0], BOARD_SIZE[1])

@@ -1,16 +1,23 @@
 import config
 from disparo import Disparo
+
+
 class Plane:
     def __init__(self, x: int, y:int):
         self.x = x
         self.y = y
-        self.sprite = (0, 0, 0, 16, 16)
+        # region of size (w, h) from (u, v)
+        # img bank, u, v, w, h
+        self.sprite = (0, 0, 0, 26, 17)
         self.lives = config.PLAYER_LIVES
         self.speed = config.PLAYER_SPEED
-        self.disparo= []
+        self.disparo = []
+
+
     def move(self, direction: str, size: int):
         plane_x_size = self.sprite[3]
         plane_y_size = self.sprite[4]
+        
         if direction.lower() == 'right' and self.x < size - plane_x_size:
             self.x += self.speed
         elif direction.lower() == 'left' and self.x > 0:
