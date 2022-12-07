@@ -5,30 +5,26 @@ class Enemigo:
     def __init__(self, x: int, y:int):
         self.x = x
         self.y = y
-        self.sprite = (1, 3, 6, 16, 16)
-        self.disparo= []
+        # Sprites para las animaciones de los enemigos.
+        self.sprites = [
+            (0, 1, 195, 16, 16),
+            (0, 1, 156, 16, 16),
+            (),
+            (),
+            (),
+        ]
+        self.sprite = self.sprites[0]
+        self.disparos = []
         self.lives = config.ENEMIGOS1_LIVES
         self.speed = config.ENEMIGOS1_SPEED
-        self.a=True
+        self.a = True
 
 
-    def move(self, direction:int,size: int):
-        '''
-        if self.a==True:
-            self.y += self.speed
-            if self.y==random.randint(130,180):
-                self.a=False
-        else:
-            self.y -= self.speed'''
+    def move(self, direction: str, size: int):
+        '''Método que define el movimiento de un enemigo.'''
 
-        if direction.lower() :
+        if direction == 'up':
             self.y -= self.speed
         
-        elif direction.lower() == 'down' :
+        elif direction == 'down':
             self.y += self.speed
-
-
-
-
-
-
