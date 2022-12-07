@@ -34,7 +34,7 @@ class Board:
         self.enemigos = []
 
         # 20 aviones regulares.
-        for i in range (0, 1):
+        for i in range (0, 2):
             random_position = random.randint(0, self.width)
             self.enemigos.append(EnemigoRegular(random_position, 0))
         
@@ -108,18 +108,18 @@ class Board:
                 try:
                     if (int(self.plane.disparos[d].x) in range (self.enemigos[i].x - 5, self.enemigos[i].x + 16) and (int(self.plane.disparos[d].y) in range (self.enemigos[i].y, self.enemigos[i].y + 16))):
                         self.enemigos.remove(self.enemigos[i])
-                except:
-                    pass
+                except: pass
         
         # Colisión entre disparos y jugador.
         for d in range (len(self.enemigos)):
-            print(self.enemigos[d].disparos)
             for i in range (len(self.enemigos[d].disparos)):
                 try:
                     if (self.enemigos[d].disparos[i].x in range (int(self.plane.x) - 5, int(self.plane.x + 16))) and (self.enemigos[d].disparos[i].y in range (int(self.plane.y), int(self.plane.y) + 16)):
                         pyxel.quit()
-                except:
-                    pass
+                except: pass
+
+        # Animación del avión.
+        self.plane.animation()
 
 
     def draw(self):

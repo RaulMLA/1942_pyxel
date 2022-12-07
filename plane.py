@@ -5,16 +5,13 @@ from disparo import Disparo
 class Plane:
     def __init__(self, x: int, y:int):
         '''Inicialización del avión.'''
-        
+
         self.x = x
         self.y = y
         # Sprites para las animaciones del avión.
         self.sprites = [
-            (0, 1, 1, 26, 17),
-            (0, 34, 1, 26, 17),
-            (0, 1, 1, 26, 17),
-            (0, 34, 1, 26, 17),
-            (0, 1, 1, 26, 17),
+            (0, 2, 2, 23, 14),
+            (0, 34, 2, 23, 14)
         ]
         self.index = 0
         self.sprite = self.sprites[self.index]
@@ -43,5 +40,8 @@ class Plane:
         '''Método que anima el avión cambiando de sprite.'''
 
         self.index += 1
+
         if self.index >= (len(self.sprites)):
             self.index = 0
+
+        self.sprite = self.sprites[self.index]
