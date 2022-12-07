@@ -1,6 +1,9 @@
 import random
 from enemigos import Enemigo
-from enemigocirc import EnemigoCircular
+from enemigoregular import EnemigoRegular
+from enemigorojo import EnemigoRojo
+from bombardero import Bombardero
+from superbombardero import Superbombardero
 from plane import Plane
 from disparo import Disparo
 import pyxel
@@ -10,8 +13,7 @@ class Board:
     '''Clase que representa el tablero.'''
 
     def __init__(self, w: int, h: int):
-        '''Método que inicializa el tablero con sus medidas y carga el banco de
-        imágenes.'''
+        '''Inicialización del tablero con sus medidas y carga del banco de imágenes.'''
 
         self.width = w
         self.height = h
@@ -21,18 +23,25 @@ class Board:
         # Posición inicial de nuestro jugador.
         self.plane = Plane(self.width / 2, 200)
 
-        # Posición inicial del enemigo.
-        self.enemigo = Enemigo(self.width / 2, 0)
+        # Metemos los distintos tipos de enemigos en una lista.
+        self.enemigos = []
+        for i in range (0, 20):
+            self.enemigos.append(EnemigoRegular(self.width / 2, 100))
+        
+        for i in range (0, 5):
+            self.enemigos.append(EnemigoRojo(self.width / 2, 100))
+        
+        for i in range (0, 2):
+            self.enemigos.append(Bombardero(self.width / 2, 100))
+        
+        self.enemigos.append(Superbombardero(self.width / 2, 100))
 
-        '''self.enemigo = []
-        for i in range (0, random.randint(3, 7)):
-            self.enemigo.append = Enemigo(self.width / 2, 0)
-            #self.enemigocirc = EnemigoCircular(self.width / 2, 30)'''
-
+        # Ejecutamos el juego.
         pyxel.run(self.update, self.draw)
 
 
     def update(self):
+        '''Función que actualiza el estado del tablero.'''
 
         # Jugador sale del juego pulsando la tecla Q.
         if pyxel.btnp(pyxel.KEY_Q):
@@ -57,33 +66,37 @@ class Board:
         for i in range(len(self.plane.disparo)):
             self.plane.disparo[i].move('up')
 
+        '''Los disparos son random y se disparan en un intervalo no controlado.
+        Se podría hacer que cada disparo tenga un porcentaje distinto dependiendo
+        del tipo de enemigo.'''
 
-        '''Disparo del enemigo random, al disparar en un intervalo no controlado'''
-##########################
-        '''Podriamos hacer distintos porcentajes de disparo según el tipo de enemigo pero esto 
-        lo tenemos que mirar con más tiempo'''
-##########################
-        if random.randint(1,1000)<40:
-            self.enemigo.disparo.append(Disparo(self.enemigo.x,self.enemigo.y))
-        for i in range(len(self.enemigo.disparo)):
-            self.enemigo.disparo[i].move("down")
+        for i in range (len(self.enemigos)):
+            if random.randint(1, 100) < 4:
+                self.enemigos[i].disparo.append(Disparo(self.enemigo.x, self.enemigo.y))
+            for i in range(len(self.enemigo.disparo)):
+                self.enemigos[i].disparo[i].move("down")
 
-##########################################################
-            '''if self.plane.disparo[i].y<-8:
-                del.self.plane.disparo[i]'''
-#############################################################
+        '''if self.plane.disparo[i].y < -8:
+            del.self.plane.disparo[i]'''
 
-        self.enemigo.move( "down",self.width)
-        #self.enemigocirc.move()
+        for i in range (len(self.enemigos)):
+            self.enemigos[i].move("down", self.width)
 
 
     def draw(self):
         '''Método que permite dibujar cada elemento en la ventana.'''
 
         # Color de fondo.
-        pyxel.cls(12)
+        pyxel.cls(5)
         x = pyxel.frame_count % pyxel.width
         x = x + 1
+        '''
+        blt(x, y, img, u, v, w, h, [colkey])
+        Copy the region of size (w, h) from (u, v) of the image bank img (0-2)
+        to (x, y). If negative value is set for w and/or h, it will reverse
+        horizontally and/or vertically. If colkey is specified, treated as
+        transparent color.
+        '''
         pyxel.blt(0, x, 1, 208, 0, 22, 56, colkey = 8)
         f = pyxel.frame_count % pyxel.width
         f = f + 2

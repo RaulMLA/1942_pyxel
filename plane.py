@@ -6,9 +6,7 @@ class Plane:
     def __init__(self, x: int, y:int):
         self.x = x
         self.y = y
-        # region of size (w, h) from (u, v)
-        # img bank, u, v, w, h
-        self.sprite = (0, 0, 0, 26, 17)
+        self.sprite = (0, 1, 1, 26, 17)
         self.lives = config.PLAYER_LIVES
         self.speed = config.PLAYER_SPEED
         self.disparo = []
