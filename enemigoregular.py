@@ -6,6 +6,8 @@ class EnemigoRegular(Enemigo):
     def move(self):
         self.indice_dir = 0
         self.contador_mov = 0
+        self.avance_movimiento = 0
+        
         if self.contador_mov < self.avance_movimiento[self.indice_dir]:
             self.contador_mov += 1
         else:
@@ -15,6 +17,7 @@ class EnemigoRegular(Enemigo):
             else:
                 self.indice_dir = 0
         direccion = self.direccion_movimiento[self.indice_dir]
+        
         if direccion == 'down':
             self.y += 1
         elif direccion == 'up':
