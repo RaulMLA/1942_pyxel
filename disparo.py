@@ -7,11 +7,7 @@ class Disparo:
         self.y = y
         # Sprites para las animaciones de los disparos.
         self.sprites = [
-            (0, 62, 77, 7, 9),
-            (),
-            (),
-            (),
-            (),
+            (0, 1, 18, 11, 10)
         ]
         self.sprite = self.sprites[0]
     

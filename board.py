@@ -32,23 +32,24 @@ class Board:
 
         # Metemos los distintos tipos de enemigos en una lista.
         self.enemigos = []
+        self.enemigos_inactivos = []
 
         # 20 aviones regulares.
-        for i in range (0, 2):
+        for i in range (0, 20):
             random_position = random.randint(0, self.width)
-            self.enemigos.append(EnemigoRegular(random_position, 0))
+            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
         
         '''# 5 aviones rojos.
         random_position = random.randint(0, self.width)
         for i in range (0, 5):
-            self.enemigos.append(EnemigoRojo(random_position, 100))
+            self.enemigos_inactivos.append(EnemigoRojo(random_position, 100))
         
         # 2 bombarderos.
         for i in range (0, 2):
-            self.enemigos.append(Bombardero(self.width / 2, 100))
+            self.enemigos_inactivos.append(Bombardero(self.width / 2, 100))
         
         # 1 superbombardero.
-        self.enemigos.append(Superbombardero(self.width / 2, 100))'''
+        self.enemigos_inactivos.append(Superbombardero(self.width / 2, 100))'''
 
         # Ejecutamos el juego.
         pyxel.run(self.update, self.draw)
@@ -75,7 +76,7 @@ class Board:
 
         # Creación, movimiento y control de un disparo por parte del jugador.
         if pyxel.btnp(pyxel.KEY_SPACE):
-            self.plane.disparos.append(Disparo(self.plane.x + 9, self.plane.y))
+            self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y))
         
         for i in range(len(self.plane.disparos)):
             self.plane.disparos[i].move('up')
@@ -97,6 +98,11 @@ class Board:
                     self.plane.disparos.remove(self.plane.disparos[i])
             except:
                 pass
+        
+        random_number = random.randint(15, 30)
+        if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
+            enemigo = self.enemigos_inactivos.pop(0)
+            self.enemigos.append(enemigo)
 
         # Movimiento de los enemigos.
         for i in range (len(self.enemigos)):
@@ -108,6 +114,7 @@ class Board:
                 try:
                     if (int(self.plane.disparos[d].x) in range (self.enemigos[i].x - 5, self.enemigos[i].x + 16) and (int(self.plane.disparos[d].y) in range (self.enemigos[i].y, self.enemigos[i].y + 16))):
                         self.enemigos.remove(self.enemigos[i])
+                        self.marcador_1up += 100
                 except: pass
         
         # Colisión entre disparos y jugador.
@@ -121,12 +128,15 @@ class Board:
         # Animación del avión.
         self.plane.animation()
 
+        if len(self.enemigos) == 0:
+            self.marcador_highscore = self.marcador_1up
+
 
     def draw(self):
         '''Método que permite dibujar cada elemento en la ventana.'''
 
         # Color de fondo.
-        pyxel.cls(5)
+        pyxel.cls(1)
         
         # Dibujamos las islas.
         x = pyxel.frame_count % pyxel.width
@@ -136,7 +146,7 @@ class Board:
         f = pyxel.frame_count % pyxel.width
         f = f + 2
         pyxel.blt(100, f, 1, 204, 101, 52, 14, colkey = 8)
-        
+
         '''
         for u in range (0, 5):
             lista = []

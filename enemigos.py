@@ -7,11 +7,8 @@ class Enemigo:
         self.y = y
         # Sprites para las animaciones de los enemigos.
         self.sprites = [
-            (0, 1, 195, 16, 16),
-            (0, 1, 156, 16, 16),
-            (),
-            (),
-            (),
+            (0, 1, 42, 15, 14),
+            (0, 17, 57, 15, 14),
         ]
         self.sprite = self.sprites[0]
         self.disparos = []

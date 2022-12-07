@@ -10,8 +10,10 @@ class Plane:
         self.y = y
         # Sprites para las animaciones del avión.
         self.sprites = [
-            (0, 2, 2, 23, 14),
-            (0, 34, 2, 23, 14)
+            (0, 1, 1, 24, 16),
+            (0, 27, 1, 24, 16),
+            (0, 53, 1, 24, 16),
+            (0, 79, 1, 24, 16)
         ]
         self.index = 0
         self.sprite = self.sprites[self.index]
