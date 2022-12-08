@@ -108,21 +108,25 @@ class Board:
         for i in range (len(self.enemigos)):
             self.enemigos[i].move()
 
-        # Colisión entre disparos y enemigos (usamos un try - except para evitar error de índice).
+        # Colisión entre disparos y enemigos (usamos un try - except para evitar error de índice en actualización de frames).
         for d in range (len(self.plane.disparos)):
             for i in range (len(self.enemigos)):
                 try:
                     if (int(self.plane.disparos[d].x) in range (self.enemigos[i].x - 5, self.enemigos[i].x + 16) and (int(self.plane.disparos[d].y) in range (self.enemigos[i].y, self.enemigos[i].y + 16))):
                         self.enemigos.remove(self.enemigos[i])
+                        self.plane.disparos.remove(self.plane.disparos[d])
                         self.marcador_1up += 100
                 except: pass
         
-        # Colisión entre disparos y jugador.
+        # Colisión entre disparos y jugador (usamos un try - except para evitar error de índice en actualización de frames).
         for d in range (len(self.enemigos)):
             for i in range (len(self.enemigos[d].disparos)):
                 try:
                     if (self.enemigos[d].disparos[i].x in range (int(self.plane.x) - 5, int(self.plane.x + 16))) and (self.enemigos[d].disparos[i].y in range (int(self.plane.y), int(self.plane.y) + 16)):
-                        pyxel.quit()
+                        if self.plane.lives == 0:
+                            pyxel.quit()
+                        else:
+                            self.plane.lives -= 1
                 except: pass
 
         # Animación del avión.
@@ -135,17 +139,20 @@ class Board:
     def draw(self):
         '''Método que permite dibujar cada elemento en la ventana.'''
 
+        # Imagen de fondo.
+        #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
+
         # Color de fondo.
         pyxel.cls(1)
-        
+
         # Dibujamos las islas.
         x = pyxel.frame_count % pyxel.width
         x = x + 1
-        pyxel.blt(0, x, 1, 208, 0, 22, 56, colkey = 8)
+        pyxel.blt(0, x, 1, 1, 1, 105, 125, colkey = 8)
 
         f = pyxel.frame_count % pyxel.width
         f = f + 2
-        pyxel.blt(100, f, 1, 204, 101, 52, 14, colkey = 8)
+        pyxel.blt(200, f, 1, 25, 127, 15, 15, colkey = 8)
 
         '''
         for u in range (0, 5):
