@@ -1,5 +1,6 @@
 import config
 from disparo import Disparo
+import pyxel
 
 
 class Plane:
@@ -20,6 +21,7 @@ class Plane:
         self.lives = config.PLAYER_LIVES
         self.speed = config.PLAYER_SPEED
         self.disparos = []
+        self.loop = False
 
 
     def move(self, direction: str, size: int):
@@ -38,8 +40,25 @@ class Plane:
             self.y += self.speed
 
 
+    def make_loop(self):
+        '''Método que permite al avión hacer un loop para evitar ser abatido.'''
+        self.loop = True
+        #self.loop_animation()
+        print('Activado')
+        
+            
     def animation(self):
         '''Método que anima el avión cambiando de sprite.'''
+
+        self.index += 1
+
+        if self.index >= (len(self.sprites)):
+            self.index = 0
+
+        self.sprite = self.sprites[self.index]
+
+    def loop_animation(self):
+        '''Método que anima el avión cuando hace un loop.'''
 
         self.index += 1
 
