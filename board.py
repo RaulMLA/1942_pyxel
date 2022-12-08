@@ -34,10 +34,10 @@ class Board:
         self.enemigos = []
         self.enemigos_inactivos = []
 
-        '''# 20 aviones regulares.
-        for i in range (0, 20):
+        # 20 aviones regulares.
+        for i in range (0, 5):
             random_position = random.randint(0, self.width)
-            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))'''
+            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
         
         # 5 aviones rojos.
         random_position = random.randint(80, self.height - 80)

@@ -15,10 +15,10 @@ class Disparo:
         '''Método que define el movimiento de un disparo.'''
 
         if direccion == 'down':
-            self.y += DISPARO_SPEED
+            self.y += DISPARO_ENEMIGOS
         elif direccion == 'up':
-            self.y -= DISPARO_SPEED
+            self.y -= DISPARO_ENEMIGOS
         elif direccion == 'left':
-            self.x -= DISPARO_SPEED
+            self.x -= DISPARO_ENEMIGOS
         elif direccion == 'right':
-            self.x += DISPARO_SPEED
+            self.x += DISPARO_ENEMIGOS
