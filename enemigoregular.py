@@ -4,7 +4,7 @@ import random
 
 class EnemigoRegular(Enemigo):
 
-    def move(self, size: int):
+    def move(self):
 
         if self.a == True:
             self.sprite = self.sprites[0]

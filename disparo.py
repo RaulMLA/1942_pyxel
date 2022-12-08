@@ -18,3 +18,7 @@ class Disparo:
             self.y += DISPARO_SPEED
         elif direccion == 'up':
             self.y -= DISPARO_SPEED
+        elif direccion == 'left':
+            self.x -= DISPARO_SPEED
+        elif direccion == 'right':
+            self.x += DISPARO_SPEED
