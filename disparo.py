@@ -1,7 +1,7 @@
 from config import *
 
 class Disparo:
-    def __init__(self, x: int, y: int, tipo: str):
+    def __init__(self, x: int, y: int, tipo: str, direction: str):
         '''Inicialización del disparo.'''
         self.x = x
         self.y = y
@@ -11,15 +11,32 @@ class Disparo:
             (0, 13, 18, 4, 4)
         ]
         self.sprite = self.sprites[0] if tipo == 'plane' else self.sprites[1]
-    
-    def move (self, direccion):
+        self.speed = DISPARO_ENEMIGOS if tipo == 'enemigo' else PLAYER_DISPARO
+        self.direction = direction
+
+    def move (self):
         '''Método que define el movimiento de un disparo.'''
 
-        if direccion == 'down':
-            self.y += DISPARO_ENEMIGOS
-        elif direccion == 'up':
-            self.y -= DISPARO_ENEMIGOS
-        elif direccion == 'left':
-            self.x -= DISPARO_ENEMIGOS
-        elif direccion == 'right':
-            self.x += DISPARO_ENEMIGOS
+        # Movimientos lineales.
+        if self.direction == 'down':
+            self.y += self.speed
+        elif self.direction == 'up':
+            self.y -= self.speed
+        elif self.direction == 'left':
+            self.x -= self.speed
+        elif self.direction == 'right':
+            self.x += self.speed
+        
+        # Movimientos diagonales.
+        elif self.direction == 'upleft':
+            self.x -= self.speed
+            self.y -= self.speed
+        elif self.direction == 'upright':
+            self.x += self.speed
+            self.y -= self.speed
+        elif self.direction == 'downleft':
+            self.x -= self.speed
+            self.y += self.speed
+        elif self.direction == 'downright':
+            self.x += self.speed
+            self.y += self.speed

@@ -89,20 +89,33 @@ class Board:
 
         # Creación, movimiento y control de un disparo por parte del jugador.
         if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
-            self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane'))
+            self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane', 'up'))
         
         for i in range(len(self.plane.disparos)):
             self.plane.disparos[i].move('up')
 
-        '''Los disparos enemigos son random y se disparan en un intervalo no controlado.
-        Cada disparo tiene que tener un porcentaje distinto dependiendo del tipo
-        de enemigo.'''
-
+        # Disparos y frecuencias dependiendo del tipo de enemigo.
         for i in range (len(self.enemigos)):
-            if random.randint(1, 100) < 4:
-                self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo'))
-            for d in range (len(self.enemigos[i].disparos)):
-                self.enemigos[i].disparos[d].move('down')
+            if self.enemigos[i].tipo == 'regular':
+                if random.randint(1, 100) < 4 and self.enemigos[i].direction == 'down':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'down'))
+                for d in range (len(self.enemigos[i].disparos)):
+                    self.enemigos[i].disparos[d].move()
+            elif self.enemigos[i].tipo == 'rojo':
+                if random.randint(1, 100) < 2 and self.enemigos[i].direction == 'right':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'right'))
+                elif random.randint(1, 100) < 2 and self.enemigos[i].direction == 'left':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'left'))
+                elif random.randint(1, 100) < 2 and self.enemigos[i].direction == 'up':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'up'))
+                elif random.randint(1, 100) < 2 and self.enemigos[i].direction == 'down':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'down'))
+                for d in range (len(self.enemigos[i].disparos)):
+                    self.enemigos[i].disparos[d].move()
+            elif self.enemigos[i].tipo == 'bombardero':
+                pass
+            elif self.enemigos[i].tipo == 'superbombardero':
+                pass
 
         # Eliminamos los disparos del avión que salen de la pantalla.
         for i in range (len(self.plane.disparos)):
@@ -112,6 +125,16 @@ class Board:
             except:
                 pass
         
+        # Eliminamos los disparos de los enemigos que salen de la pantalla.
+        for i in range (len(self.enemigos)):
+            for d in range (len(self.enemigos[i].disparos)):
+                try:
+                    if self.enemigos[i].disparos[d].y > self.height:
+                        self.enemigos[i].disparos.remove(self.enemigos[i].disparos[d])
+                except:
+                    pass
+        
+        # Puesta en marcha de los enemigos.
         random_number = random.randint(15, 30)
         if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
             enemigo = self.enemigos_inactivos.pop(0)
@@ -141,6 +164,16 @@ class Board:
                         else:
                             self.plane.lives -= 1
                 except: pass
+        
+        # Colisión entre jugador y enemigos (usamos un try - except para evitar error de índice en actualización de frames).
+        for i in range (len(self.enemigos)):
+            try:
+                if (int(self.plane.x) in range (self.enemigos[i].x - 5, self.enemigos[i].x + 16) and (int(self.plane.y) in range (self.enemigos[i].y, self.enemigos[i].y + 16))):
+                    if self.plane.lives == 0:
+                        pyxel.quit()
+                    else:
+                        self.plane.lives -= 1
+            except: pass
 
         # Animación del avión.
         self.plane.animation()
