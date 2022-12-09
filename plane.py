@@ -36,13 +36,13 @@ class Plane:
         plane_x_size = self.sprite[3]
         plane_y_size = self.sprite[4]
         
-        if direction.lower() == 'right' and self.x < size - plane_x_size:
+        if direction == 'right' and self.x < size - plane_x_size:
             self.x += self.speed
-        elif direction.lower() == 'left' and self.x > 0:
+        elif direction == 'left' and self.x > 0:
             self.x -= self.speed
-        elif direction.lower() == 'up' and self.y > 0:
+        elif direction == 'up' and self.y > 0:
             self.y -= self.speed
-        elif direction.lower() == 'down' and self.y < size - plane_y_size:
+        elif direction == 'down' and self.y < size - plane_y_size:
             self.y += self.speed
 
 

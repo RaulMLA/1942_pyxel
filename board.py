@@ -39,12 +39,12 @@ class Board:
             random_position = random.randint(0, self.width)
             self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
         
-        # 5 aviones rojos.
+        '''# 5 aviones rojos.
         random_position = random.randint(80, self.height - 80)
         for i in range (0, 5):
             self.enemigos_inactivos.append(EnemigoRojo(0, random_position))
         
-        '''# 2 bombarderos.
+        # 2 bombarderos.
         for i in range (0, 2):
             self.enemigos_inactivos.append(Bombardero(self.width / 2, 100))
         
@@ -144,6 +144,10 @@ class Board:
 
         # Animación del avión.
         self.plane.animation()
+
+        # Animación de los enemigos.
+        for i in range (len(self.enemigos)):
+            self.enemigos[i].animation()
 
         if len(self.enemigos) == 0:
             self.marcador_highscore = self.marcador_1up

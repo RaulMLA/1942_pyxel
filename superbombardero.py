@@ -1,4 +1,5 @@
 from enemigos import Enemigo
+import pyxel
 
 
 class Superbombardero(Enemigo):
