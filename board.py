@@ -21,7 +21,7 @@ class Board:
 
         # Marcadores de puntuación.
         self.marcador_1up = 0
-        self.marcador_highscore = 0
+        self.marcador_highscore = 40000
 
         # Ventana y assets.
         pyxel.init(self.width, self.height, title = "1942")
@@ -36,19 +36,20 @@ class Board:
 
         # 20 aviones regulares.
         for i in range (0, 5):
-            random_position = random.randint(0, self.width)
+            random_position = random.randint(16, self.width - 16)
             self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
         
-        # 5 aviones rojos.
+        '''# 5 aviones rojos.
         random_position = random.randint(80, self.height - 80)
         for i in range (0, 5):
-            self.enemigos_inactivos.append(EnemigoRojo(0, random_position))
+            self.enemigos_inactivos.append(EnemigoRojo(0, random_position))'''
         
-        '''# 2 bombarderos.
-        for i in range (0, 2):
-            self.enemigos_inactivos.append(Bombardero(self.width / 2, 100))
+        # 2 bombarderos.
+        for i in range (0, 1):
+            random_position = random.randint(30, self.width - 30)
+            self.enemigos_inactivos.append(Bombardero(random_position, 0))
         
-        # 1 superbombardero.
+        '''# 1 superbombardero.
         self.enemigos_inactivos.append(Superbombardero(self.width / 2, 100))'''
 
         # Ejecutamos el juego.
@@ -92,13 +93,17 @@ class Board:
             self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane', 'up'))
         
         for i in range(len(self.plane.disparos)):
-            self.plane.disparos[i].move('up')
+            self.plane.disparos[i].move()
 
         # Disparos y frecuencias dependiendo del tipo de enemigo.
         for i in range (len(self.enemigos)):
             if self.enemigos[i].tipo == 'regular':
                 if random.randint(1, 100) < 4 and self.enemigos[i].direction == 'down':
                     self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'down'))
+                elif random.randint(1, 100) < 4 and self.enemigos[i].direction == 'downleft':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'downleft'))
+                elif random.randint(1, 100) < 4 and self.enemigos[i].direction == 'downright':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'downright'))
                 for d in range (len(self.enemigos[i].disparos)):
                     self.enemigos[i].disparos[d].move()
             elif self.enemigos[i].tipo == 'rojo':
@@ -113,7 +118,8 @@ class Board:
                 for d in range (len(self.enemigos[i].disparos)):
                     self.enemigos[i].disparos[d].move()
             elif self.enemigos[i].tipo == 'bombardero':
-                pass
+                if random.randint(1, 100) < 2 and self.enemigos[i].direction in ['down', 'downleft', 'downright']:
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 20, self.enemigos[i].y, 'enemigo', 'down'))
             elif self.enemigos[i].tipo == 'superbombardero':
                 pass
 
@@ -148,17 +154,19 @@ class Board:
         for d in range (len(self.plane.disparos)):
             for i in range (len(self.enemigos)):
                 try:
-                    if (int(self.plane.disparos[d].x) in range (self.enemigos[i].x - 5, self.enemigos[i].x + 16) and (int(self.plane.disparos[d].y) in range (self.enemigos[i].y, self.enemigos[i].y + 16))):
-                        self.enemigos.remove(self.enemigos[i])
+                    if self.enemigos[i].comprobar_colision(self.plane.disparos[d].x, self.plane.disparos[d].y):
+                        if self.enemigos[i].lives <= 0:
+                            self.marcador_1up += self.enemigos[i].score
+                            self.enemigos.remove(self.enemigos[i])
                         self.plane.disparos.remove(self.plane.disparos[d])
-                        self.marcador_1up += 100
+
                 except: pass
         
         # Colisión entre disparos y jugador (usamos un try - except para evitar error de índice en actualización de frames).
         for d in range (len(self.enemigos)):
             for i in range (len(self.enemigos[d].disparos)):
                 try:
-                    if (self.enemigos[d].disparos[i].x in range (int(self.plane.x - 5), int(self.plane.x + 24))) and (self.enemigos[d].disparos[i].y in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
+                    if (int(self.enemigos[d].disparos[i].x) in range (int(self.plane.x - 5), int(self.plane.x + 24))) and (int(self.enemigos[d].disparos[i].y) in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
                         if self.plane.lives == 0:
                             pyxel.quit()
                         else:
@@ -181,9 +189,6 @@ class Board:
         # Animación de los enemigos.
         for i in range (len(self.enemigos)):
             self.enemigos[i].animation()
-
-        if len(self.enemigos) == 0:
-            self.marcador_highscore = self.marcador_1up
 
 
     def draw(self):

@@ -29,14 +29,14 @@ class Disparo:
         
         # Movimientos diagonales.
         elif self.direction == 'upleft':
-            self.x -= self.speed
+            self.x -= 0.6
             self.y -= self.speed
         elif self.direction == 'upright':
-            self.x += self.speed
+            self.x += 0.6
             self.y -= self.speed
         elif self.direction == 'downleft':
-            self.x -= self.speed
+            self.x -= 0.6
             self.y += self.speed
         elif self.direction == 'downright':
-            self.x += self.speed
+            self.x += 0.6
             self.y += self.speed

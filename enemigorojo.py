@@ -24,6 +24,7 @@ class EnemigoRojo(Enemigo):
 
         self.lives = config.ENEMIGOS2_LIVES
         self.speed = config.ENEMIGOS2_SPEED
+        self.score = config.ENEMIGOS2_SCORE
     
 
     def move(self):
@@ -51,3 +52,13 @@ class EnemigoRojo(Enemigo):
                     self.in_loop = False
                     self.next_loop += 70
                     self.direction = 'right'
+
+
+    def comprobar_colision(self, x: int, y: int) -> bool:
+        '''Método que comprueba si el disparo impacta en el enemigo.'''
+
+        if int(x) in range (int(self.x) - 10, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 15):
+            self.lives -= 1
+            return True
+        else:
+            return False

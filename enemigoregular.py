@@ -1,5 +1,6 @@
 from enemigos import Enemigo
 import config
+import random
 import pyxel
 
 
@@ -10,10 +11,11 @@ class EnemigoRegular(Enemigo):
 
         super().__init__(x, y)
         self.tipo = 'regular'
-        self.direction = 'down'
+        self.direction = random.choice(['down', 'downleft', 'downright'])
 
         self.lives = config.ENEMIGOS1_LIVES
         self.speed = config.ENEMIGOS1_SPEED
+        self.score = config.ENEMIGOS1_SCORE
 
 
     def move(self):
@@ -21,6 +23,16 @@ class EnemigoRegular(Enemigo):
 
         super().move()
 
-        if self.direction == 'down':
+        if self.direction in ['down', 'downleft', 'downright']:
             if self.y >= 150:
                 self.direction = 'up'
+
+
+    def comprobar_colision(self, x: int, y: int) -> bool:
+        '''Método que comprueba si el disparo impacta en el enemigo.'''
+
+        if int(x) in range (int(self.x) - 10, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 15):
+            self.lives -= 1
+            return True
+        else:
+            return False

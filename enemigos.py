@@ -47,16 +47,16 @@ class Enemigo:
             (0, 46, 72, 14, 7),
 
             # Bombardero -> Dirección 'down' ([24:28])
-            (0, 1, 42, 15, 14),
-            (0, 17, 42, 15, 14),
-            (0, 33, 42, 15, 14),
-            (0, 49, 42, 15, 14),
+            (0, 1, 119, 31, 23),
+            (0, 33, 119, 31, 23),
+            (0, 65, 119, 31, 23),
+            (0, 97, 119, 31, 23),
 
             # Bombardero -> Dirección 'up' ([28:32])
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
+            (0, 1, 95, 31, 23),
+            (0, 33, 95, 31, 23),
+            (0, 65, 95, 31, 23),
+            (0, 97, 95, 31, 23),
 
             (0, 1, 42, 15, 14),
             (0, 17, 42, 15, 14),
@@ -119,6 +119,7 @@ class Enemigo:
     def move(self):
         '''Método que define el movimiento de un enemigo.'''
 
+        # Movimientos lineales.
         if self.direction == 'up':
             self.y -= self.speed
         elif self.direction == 'down':
@@ -128,13 +129,28 @@ class Enemigo:
         elif self.direction == 'left':
             self.x -= self.speed
 
+        # Movimientos diagonales.
+        elif self.direction == 'upleft':
+            self.x -= 0.4
+            self.y -= self.speed
+        elif self.direction == 'upright':
+            self.x += 0.4
+            self.y -= self.speed
+        elif self.direction == 'downleft':
+            self.x -= 0.4
+            self.y += self.speed
+        elif self.direction == 'downright':
+            self.x += 0.4
+            self.y += self.speed
+
+
 
     def animation(self):
         '''Método que anima el enemigo regular cambiando de sprite.'''
 
         self.index += 1
 
-        if self.tipo == 'regular' and self.direction == 'down':
+        if self.tipo == 'regular' and self.direction in ['down', 'downleft', 'downright']:
             self.sprites = self.sprites_bank[0:4]
         elif self.tipo == 'regular' and self.direction == 'up':
             self.sprites = self.sprites_bank[4:8]
@@ -146,9 +162,9 @@ class Enemigo:
             self.sprites = self.sprites_bank[16:20]
         elif self.tipo == 'rojo' and self.direction == 'left':
             self.sprites = self.sprites_bank[20:24]
-        elif self.tipo == 'bombardero' and self.direction == 'up':
+        elif self.tipo == 'bombardero' and self.direction in ['up', 'upleft', 'upright']:
             self.sprites = self.sprites_bank[28:32]
-        elif self.tipo == 'bombardero' and self.direction == 'down':
+        elif self.tipo == 'bombardero' and self.direction in ['down', 'downleft', 'downright']:
             self.sprites = self.sprites_bank[24:28]
         elif self.tipo == 'superbombardero':
             pass
