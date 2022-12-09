@@ -1,4 +1,4 @@
-import config
+from config import *
 
 
 class Isla:
@@ -39,12 +39,12 @@ class Isla:
         elif self.tipo == 'isla_grande':
             self.sprite = self.sprites[4]
             self.x = 130
-            self.y = -200
+            self.y = -250
         
     def move(self):
         self.y += 1
 
-        if self.y > config.BOARD_SIZE[1] + 10:
+        if self.y > BOARD_SIZE[1] + 10:
             if self.tipo == 'isla_grande_borde':
                 self.x = 0
                 self.y = -127
@@ -53,10 +53,10 @@ class Isla:
                 self.y = -10
             elif self.tipo == 'isla_pequena_2':
                 self.x = 120
-                self.y = -12
+                self.y = -40
             elif self.tipo == 'isla_pequena_3':
                 self.x = 210
-                self.y = -16
+                self.y = -30
             elif self.tipo == 'isla_grande':
                 self.x = 130
-                self.y = -91
+                self.y = -250

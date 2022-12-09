@@ -8,6 +8,7 @@ from superbombardero import Superbombardero
 from plane import Plane
 from disparo import Disparo
 import pyxel
+from config import *
 
 
 class Board:
@@ -38,24 +39,11 @@ class Board:
         # Islas del fondo.
         self.fondo = Fondo()
 
-        # 20 aviones regulares.
-        for i in range (0, 20):
-            random_position = random.randint(16, self.width - 16)
-            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
-        
-        '''# 5 aviones rojos.
-        random_position = random.randint(80, self.height - 80)
-        for i in range (0, 5):
-            self.enemigos_inactivos.append(EnemigoRojo(0, random_position))
-        
-        # 2 bombarderos.
-        for i in range (0, 2):
-            random_position = random.randint(30, self.width - 30)
-            self.enemigos_inactivos.append(Bombardero(random_position, 0))
-        
-        # 1 superbombardero.
-        random_position = random.randint(70, self.width - 70)
-        self.enemigos_inactivos.append(Superbombardero(random_position, self.height))'''
+        # Generamos los enemigos.
+        self.generar_enemigos()
+
+        # Variable de control para la generación de enemigos.
+        self.primer_enemigo = True
 
         # Música de fondo.
         pyxel.play(0, 1, 1, True)
@@ -107,6 +95,33 @@ class Board:
                     if self.plane.loop:
                         self.plane.loops -= 1
                         self.plane.loop = False    
+
+            '''# Puesta en marcha de los enemigos.
+            random_number = random.randint(15, 30)
+            if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
+                enemigo = self.enemigos_inactivos.pop(0)
+                # Los enemigos rojos se generan en grupos de 7 y aparecen seguidos en el mismo intervalo de tiempo.
+                if enemigo.tipo == 'rojo':
+                    counter = 5
+                    while counter > 0:
+                        if pyxel.frame_count % 10 == 0:
+                            self.enemigos.append(enemigo)
+                            counter -= 1
+                else:
+                    self.enemigos.append(enemigo)'''
+            
+            # Puesta en marcha de los enemigos.
+            if self.primer_enemigo:
+                random_number = random.randint(15, 30)
+            
+            if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
+                enemigo = self.enemigos_inactivos.pop(0)
+                # Los enemigos rojos se generan en grupos de 7 y aparecen seguidos en el mismo intervalo de tiempo.
+                if enemigo.tipo == 'rojo':
+                    self.enemigos.append(enemigo)
+                else:
+                    self.enemigos.append(enemigo)
+                    random_number = random.randint(15, 30)
 
             # Creación de un disparo por parte del jugador.
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
@@ -166,12 +181,6 @@ class Board:
                         self.enemigos.remove(self.enemigos[i])
                 except: pass
             
-            # Puesta en marcha de los enemigos.
-            random_number = random.randint(15, 30)
-            if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
-                enemigo = self.enemigos_inactivos.pop(0)
-                self.enemigos.append(enemigo)
-
             # Movimiento de las islas del fondo.
             self.fondo.move()
 
@@ -303,3 +312,48 @@ class Board:
             pyxel.text(55, 140, '>> PULSA ENTER PARA EMPEZAR EL JUEGO', 7)
             pyxel.text(55, 152, '>> PULSA ESC O Q PARA QUITAR EL JUEGO', 7)
             pyxel.blt(95, 190, 0, 1, 192, 64, 16, colkey = 8)
+
+
+    def generar_enemigos(self):
+        '''Método para generar los enemigos siguiendo una distribución aleatoria.'''
+
+        count_enemigos_1 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos regulaares.
+        count_enemigos_2 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos rojos.
+        count_enemigos_3 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos bombarderos.
+        count_enemigos_4 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos superbombarderos.
+
+        while (count_enemigos_1 < ENEMIGOS1_MIN) or (count_enemigos_2 < ENEMIGOS2_MIN) or (count_enemigos_3 < ENEMIGOS3_MIN) or (count_enemigos_4 < ENEMIGOS4_MIN):
+            
+            
+            
+            # Generación de enemigos rojos (formación de 5).
+            generar = random.randrange(0, 6, 5)
+            random_position = random.randint(80, self.height - 80)
+            count_enemigos_2 += generar
+            while generar != 0:
+                self.enemigos_inactivos.append(EnemigoRojo(0, random_position))
+                generar -= 1
+
+            # Generación de enemigos regulares (formaciones múltiplos de 5 hasta un máximo de 20).
+            generar = random.randrange(0, 21, 5)
+            count_enemigos_1 += generar
+            while generar != 0:
+                random_position = random.randint(16, self.width - 16)
+                self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
+                generar -= 1
+
+            # Generación de bombarderos (se generan de 1 a 3).
+            generar = random.randint(0, 3)
+            count_enemigos_3 += generar
+            while generar != 0:
+                random_position = random.randint(30, self.width - 30)
+                self.enemigos_inactivos.append(Bombardero(random_position, 0))
+                generar -= 1
+            
+            # Generación de superbombarderos (se generan de manera individual).
+            generar = random.randint(0, 1)
+            count_enemigos_4 += generar
+            while generar != 0:
+                random_position = random.randint(70, self.width - 70)
+                self.enemigos_inactivos.append(Superbombardero(random_position, self.height))
+                generar -= 1
