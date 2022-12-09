@@ -30,7 +30,7 @@ class Bombardero(Enemigo):
     def comprobar_colision(self, x: int, y: int) -> bool:
         '''Método que comprueba si el disparo impacta en el enemigo.'''
 
-        if int(x) in range (int(self.x) - 10, int(self.x) + 31) and int(y) in range (int(self.y), int(self.y) + 30):
+        if int(x) in range (int(self.x) - 10, int(self.x) + 31) and int(y) in range (int(self.y), int(self.y) + 23):
             self.lives -= 1
             return True
         else:

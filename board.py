@@ -34,10 +34,10 @@ class Board:
         self.enemigos = []
         self.enemigos_inactivos = []
 
-        '''# 20 aviones regulares.
+        # 20 aviones regulares.
         for i in range (0, 5):
             random_position = random.randint(16, self.width - 16)
-            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))'''
+            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
         
         '''# 5 aviones rojos.
         random_position = random.randint(80, self.height - 80)
@@ -52,6 +52,11 @@ class Board:
         # 1 superbombardero.
         random_position = random.randint(70, self.width - 70)
         self.enemigos_inactivos.append(Superbombardero(random_position, self.height))
+
+        # Música de fondo.
+        pyxel.play(0, 1, 1, True)
+        pyxel.play(0, 2, 1, True)
+        pyxel.play(0, 3, 1, True)
 
         # Ejecutamos el juego.
         pyxel.run(self.update, self.draw)
@@ -145,6 +150,8 @@ class Board:
                 try:
                     if self.enemigos[i].comprobar_colision(self.plane.disparos[d].x, self.plane.disparos[d].y):
                         if self.enemigos[i].lives <= 0:
+                            # Efecto de sonido de destrucción de enemigo.
+                            pyxel.play(1, 0)
                             self.marcador_1up += self.enemigos[i].score
                             self.enemigos.remove(self.enemigos[i])
                         self.plane.disparos.remove(self.plane.disparos[d])
