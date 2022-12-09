@@ -89,7 +89,7 @@ class Board:
 
         # Creación, movimiento y control de un disparo por parte del jugador.
         if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
-            self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y))
+            self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane'))
         
         for i in range(len(self.plane.disparos)):
             self.plane.disparos[i].move('up')
@@ -100,7 +100,7 @@ class Board:
 
         for i in range (len(self.enemigos)):
             if random.randint(1, 100) < 4:
-                self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y))
+                self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo'))
             for d in range (len(self.enemigos[i].disparos)):
                 self.enemigos[i].disparos[d].move('down')
 

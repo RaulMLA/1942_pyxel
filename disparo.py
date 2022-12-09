@@ -1,7 +1,7 @@
 from config import *
 
 class Disparo:
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, tipo: str):
         '''Inicialización del disparo.'''
         self.x = x
         self.y = y
@@ -10,7 +10,7 @@ class Disparo:
             (0, 1, 18, 11, 10),
             (0, 13, 18, 4, 4)
         ]
-        self.sprite = self.sprites[0]
+        self.sprite = self.sprites[0] if tipo == 'plane' else self.sprites[1]
     
     def move (self, direccion):
         '''Método que define el movimiento de un disparo.'''
