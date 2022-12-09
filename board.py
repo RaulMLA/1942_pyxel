@@ -34,23 +34,24 @@ class Board:
         self.enemigos = []
         self.enemigos_inactivos = []
 
-        # 20 aviones regulares.
+        '''# 20 aviones regulares.
         for i in range (0, 5):
             random_position = random.randint(16, self.width - 16)
-            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
+            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))'''
         
         '''# 5 aviones rojos.
         random_position = random.randint(80, self.height - 80)
         for i in range (0, 5):
             self.enemigos_inactivos.append(EnemigoRojo(0, random_position))'''
         
-        # 2 bombarderos.
+        '''# 2 bombarderos.
         for i in range (0, 1):
             random_position = random.randint(30, self.width - 30)
-            self.enemigos_inactivos.append(Bombardero(random_position, 0))
+            self.enemigos_inactivos.append(Bombardero(random_position, 0))'''
         
-        '''# 1 superbombardero.
-        self.enemigos_inactivos.append(Superbombardero(self.width / 2, 100))'''
+        # 1 superbombardero.
+        random_position = random.randint(70, self.width - 70)
+        self.enemigos_inactivos.append(Superbombardero(random_position, self.height))
 
         # Ejecutamos el juego.
         pyxel.run(self.update, self.draw)
@@ -98,30 +99,18 @@ class Board:
         # Disparos y frecuencias dependiendo del tipo de enemigo.
         for i in range (len(self.enemigos)):
             if self.enemigos[i].tipo == 'regular':
-                if random.randint(1, 100) < 4 and self.enemigos[i].direction == 'down':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'down'))
-                elif random.randint(1, 100) < 4 and self.enemigos[i].direction == 'downleft':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'downleft'))
-                elif random.randint(1, 100) < 4 and self.enemigos[i].direction == 'downright':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', 'downright'))
-                for d in range (len(self.enemigos[i].disparos)):
-                    self.enemigos[i].disparos[d].move()
+                if random.randint(1, 100) < 4 and self.enemigos[i].direction != 'up':
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', self.enemigos[i].direction))
             elif self.enemigos[i].tipo == 'rojo':
-                if random.randint(1, 100) < 2 and self.enemigos[i].direction == 'right':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'right'))
-                elif random.randint(1, 100) < 2 and self.enemigos[i].direction == 'left':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'left'))
-                elif random.randint(1, 100) < 2 and self.enemigos[i].direction == 'up':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'up'))
-                elif random.randint(1, 100) < 2 and self.enemigos[i].direction == 'down':
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', 'down'))
-                for d in range (len(self.enemigos[i].disparos)):
-                    self.enemigos[i].disparos[d].move()
+                if random.randint(1, 100) < 2:
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', self.enemigos[i].direction))
             elif self.enemigos[i].tipo == 'bombardero':
-                if random.randint(1, 100) < 2 and self.enemigos[i].direction in ['down', 'downleft', 'downright']:
-                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 20, self.enemigos[i].y, 'enemigo', 'down'))
-            elif self.enemigos[i].tipo == 'superbombardero':
+                if random.randint(1, 100) < 2 and self.enemigos[i].direction not in ['up', 'upleft', 'upright']:
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 20, self.enemigos[i].y, 'enemigo', self.enemigos[i].direction))
                 pass
+                
+            for d in range (len(self.enemigos[i].disparos)):
+                self.enemigos[i].disparos[d].move()
 
         # Eliminamos los disparos del avión que salen de la pantalla.
         for i in range (len(self.plane.disparos)):
