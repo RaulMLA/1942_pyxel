@@ -1,5 +1,6 @@
 from enemigos import Enemigo
 import random
+import config
 import pyxel
 
 
@@ -20,7 +21,11 @@ class EnemigoRojo(Enemigo):
         self.step_3 = False
         self.save_y = 0
         self.save_x = 0
+
+        self.lives = config.ENEMIGOS2_LIVES
+        self.speed = config.ENEMIGOS2_SPEED
     
+
     def move(self):
         
         super().move()

@@ -1,4 +1,5 @@
 from enemigos import Enemigo
+import config
 import pyxel
 
 
@@ -10,6 +11,9 @@ class EnemigoRegular(Enemigo):
         super().__init__(x, y)
         self.tipo = 'regular'
         self.direction = 'down'
+
+        self.lives = config.ENEMIGOS1_LIVES
+        self.speed = config.ENEMIGOS1_SPEED
 
 
     def move(self):

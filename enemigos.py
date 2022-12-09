@@ -46,11 +46,13 @@ class Enemigo:
             (0, 31, 72, 14, 7),
             (0, 46, 72, 14, 7),
 
+            # Bombardero -> Dirección 'down' ([24:28])
             (0, 1, 42, 15, 14),
             (0, 17, 42, 15, 14),
             (0, 33, 42, 15, 14),
             (0, 49, 42, 15, 14),
 
+            # Bombardero -> Dirección 'up' ([28:32])
             (0, 17, 57, 15, 14),
             (0, 17, 57, 15, 14),
             (0, 17, 57, 15, 14),
@@ -112,8 +114,6 @@ class Enemigo:
         self.index = 0
         self.sprite = None
         self.disparos = []
-        self.lives = config.ENEMIGOS1_LIVES
-        self.speed = config.ENEMIGOS1_SPEED
         
 
     def move(self):
@@ -147,9 +147,9 @@ class Enemigo:
         elif self.tipo == 'rojo' and self.direction == 'left':
             self.sprites = self.sprites_bank[20:24]
         elif self.tipo == 'bombardero' and self.direction == 'up':
-            pass
+            self.sprites = self.sprites_bank[28:32]
         elif self.tipo == 'bombardero' and self.direction == 'down':
-            pass
+            self.sprites = self.sprites_bank[24:28]
         elif self.tipo == 'superbombardero':
             pass
         
