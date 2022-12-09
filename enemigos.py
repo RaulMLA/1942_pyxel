@@ -10,35 +10,41 @@ class Enemigo:
 
         # Sprites para las animaciones de los enemigos.
         self.sprites_bank = [
+            # Regular -> Dirección 'down' ([0:4])
             (0, 1, 42, 15, 14),
             (0, 17, 42, 15, 14),
             (0, 33, 42, 15, 14),
             (0, 49, 42, 15, 14),
 
+            # Regular -> Dirección 'up' ([4:8])
             (0, 1, 57, 15, 14),
             (0, 17, 57, 15, 14),
             (0, 33, 57, 15, 14),
             (0, 49, 57, 15, 14),
 
-            (0, 1, 42, 15, 14),
-            (0, 17, 42, 15, 14),
-            (0, 33, 42, 15, 14),
-            (0, 49, 42, 15, 14),
+            # Rojo -> Dirección 'down' ([8:12])
+            (0, 1, 80, 15, 14),
+            (0, 17, 80, 15, 14),
+            (0, 33, 80, 15, 14),
+            (0, 49, 80, 15, 14),
 
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
+            # Rojo -> Dirección 'up' ([12:16])
+            (0, 65, 80, 15, 14),
+            (0, 81, 80, 15, 14),
+            (0, 97, 80, 15, 14),
+            (0, 113, 80, 15, 14),
 
-            (0, 1, 42, 15, 14),
-            (0, 17, 42, 15, 14),
-            (0, 33, 42, 15, 14),
-            (0, 49, 42, 15, 14),
+            # Rojo -> Dirección 'right' ([16:20])
+            (0, 65, 48, 14, 7),
+            (0, 80, 48, 14, 7),
+            (0, 61, 72, 14, 7),
+            (0, 76, 72, 14, 7),
 
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
-            (0, 17, 57, 15, 14),
+            # Rojo -> Dirección 'left' ([20:24])
+            (0, 1, 72, 14, 7),
+            (0, 16, 72, 14, 7),
+            (0, 31, 72, 14, 7),
+            (0, 46, 72, 14, 7),
 
             (0, 1, 42, 15, 14),
             (0, 17, 42, 15, 14),
@@ -133,13 +139,13 @@ class Enemigo:
         elif self.tipo == 'regular' and self.direction == 'up':
             self.sprites = self.sprites_bank[4:8]
         elif self.tipo == 'rojo' and self.direction == 'up':
-            pass
+            self.sprites = self.sprites_bank[12:16]
         elif self.tipo == 'rojo' and self.direction == 'down':
-            pass
+            self.sprites = self.sprites_bank[8:12]
         elif self.tipo == 'rojo' and self.direction == 'right':
-            pass
+            self.sprites = self.sprites_bank[16:20]
         elif self.tipo == 'rojo' and self.direction == 'left':
-            pass
+            self.sprites = self.sprites_bank[20:24]
         elif self.tipo == 'bombardero' and self.direction == 'up':
             pass
         elif self.tipo == 'bombardero' and self.direction == 'down':
