@@ -17,8 +17,8 @@ class Superbombardero(Enemigo):
         self.speed = config.ENEMIGOS4_SPEED
         self.score = config.ENEMIGOS4_SCORE
 
-        self.loops = random.randint(1, 3)
-        self.next_loop = 140
+        self.loops = random.randint(1, 2)
+        self.next_loop = 110
         self.in_loop = False
         self.save_y = 0
         self.save_x = 0
