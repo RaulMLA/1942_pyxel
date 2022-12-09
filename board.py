@@ -3,6 +3,7 @@ from enemigos import Enemigo
 from enemigoregular import EnemigoRegular
 from enemigorojo import EnemigoRojo
 from bombardero import Bombardero
+from fondo import Fondo
 from superbombardero import Superbombardero
 from plane import Plane
 from disparo import Disparo
@@ -34,8 +35,11 @@ class Board:
         self.enemigos = []
         self.enemigos_inactivos = []
 
+        # Islas del fondo.
+        self.fondo = Fondo()
+
         # 20 aviones regulares.
-        for i in range (0, 5):
+        for i in range (0, 20):
             random_position = random.randint(16, self.width - 16)
             self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
         
@@ -59,7 +63,7 @@ class Board:
         pyxel.play(0, 3, 1, True)
 
         # Condición de inicio del juego.
-        self.start_condition = False
+        self.start_condition = True
 
         # El jugador ha perdido.
         self.loose = False
@@ -168,6 +172,9 @@ class Board:
                 enemigo = self.enemigos_inactivos.pop(0)
                 self.enemigos.append(enemigo)
 
+            # Movimiento de las islas del fondo.
+            self.fondo.move()
+
             # Movimiento de los enemigos.
             for i in range (len(self.enemigos)):
                 self.enemigos[i].move()
@@ -230,13 +237,8 @@ class Board:
             pyxel.cls(1)
 
             # Dibujamos las islas.
-            x = pyxel.frame_count % pyxel.width
-            x = x + 1
-            pyxel.blt(0, x, 1, 1, 1, 105, 125, colkey = 8)
-
-            f = pyxel.frame_count % pyxel.width
-            f = f + 2
-            pyxel.blt(200, f, 1, 25, 127, 15, 15, colkey = 8)
+            for isla in self.fondo.islas:
+                pyxel.blt(isla.x, isla.y, *isla.sprite, colkey = 8)
 
             # Dibujamos los marcadores de puntuación.
             pyxel.text(15, 5, "1 U P", 7)
@@ -250,17 +252,17 @@ class Board:
             pyxel.blt(self.plane.x, self.plane.y, *self.plane.sprite, colkey = 8)
 
             # Dibujamos los enemigos.
-            for i in range (len(self.enemigos)):
-                pyxel.blt(self.enemigos[i].x, self.enemigos[i].y, *self.enemigos[i].sprite, colkey = 8)
-            
+            for enemigo in self.enemigos:
+                pyxel.blt(enemigo.x, enemigo.y, *enemigo.sprite, 8)
+
             # Dibujamos los disparos de los enemigos.
-            for i in range (len(self.enemigos)):
-                for d in range(len(self.enemigos[i].disparos)):
-                    pyxel.blt(self.enemigos[i].disparos[d].x, self.enemigos[i].disparos[d].y, *self.enemigos[i].disparos[d].sprite, colkey = 8)
+            for enemigo in self.enemigos:
+                for disparo in enemigo.disparos:
+                    pyxel.blt(disparo.x, disparo.y, *disparo.sprite, 8)
 
             # Dibujamos los disparos del avión.
-            for i in range(len(self.plane.disparos)):
-                pyxel.blt(self.plane.disparos[i].x, self.plane.disparos[i].y, *self.plane.disparos[i].sprite, colkey = 8)
+            for disparo in self.plane.disparos:
+                pyxel.blt(disparo.x, disparo.y, *disparo.sprite, 8)
 
             # Animación final.
             if self.plane.lives == 0:
