@@ -34,10 +34,10 @@ class Board:
         self.enemigos = []
         self.enemigos_inactivos = []
 
-        # 20 aviones regulares.
-        for i in range (0, 5):
+        '''# 20 aviones regulares.
+        for i in range (0, 20):
             random_position = random.randint(16, self.width - 16)
-            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
+            self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))'''
         
         '''# 5 aviones rojos.
         random_position = random.randint(80, self.height - 80)
@@ -91,28 +91,37 @@ class Board:
             if pyxel.frame_count % 45 == 0:
                 if self.plane.loop:
                     self.plane.loops -= 1
-                    self.plane.loop = False
-                
+                    self.plane.loop = False    
 
-        # Creación, movimiento y control de un disparo por parte del jugador.
+        # Creación de un disparo por parte del jugador.
         if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
             self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane', 'up'))
         
+        # Movimiento de los disparos del jugador.
         for i in range(len(self.plane.disparos)):
             self.plane.disparos[i].move()
 
         # Disparos y frecuencias dependiendo del tipo de enemigo.
         for i in range (len(self.enemigos)):
+            # Enemigo regular.
             if self.enemigos[i].tipo == 'regular':
                 if random.randint(1, 100) < 4 and self.enemigos[i].direction != 'up':
                     self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y, 'enemigo', self.enemigos[i].direction))
+            # Enemigo rojo.
             elif self.enemigos[i].tipo == 'rojo':
                 if random.randint(1, 100) < 2:
                     self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 10, self.enemigos[i].y, 'enemigo', self.enemigos[i].direction))
+            # Enemigo bombardero.
             elif self.enemigos[i].tipo == 'bombardero':
-                if random.randint(1, 100) < 2 and self.enemigos[i].direction not in ['up', 'upleft', 'upright']:
+                if random.randint(1, 100) < 3 and self.enemigos[i].direction not in ['up', 'upleft', 'upright']:
                     self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 20, self.enemigos[i].y, 'enemigo', self.enemigos[i].direction))
-                pass
+            # Enemigo superbombardero.
+            elif self.enemigos[i].tipo == 'superbombardero':
+                if random.randint(1, 100) < 4 and self.enemigos[i].y < 200:
+                    # Se generan en grupos de 3 con diferentes direcciones.
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 30, self.enemigos[i].y + 30, 'enemigo', 'downleft'))
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 30, self.enemigos[i].y + 30, 'enemigo', 'down'))
+                    self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 30, self.enemigos[i].y + 30, 'enemigo', 'downright'))
                 
             for d in range (len(self.enemigos[i].disparos)):
                 self.enemigos[i].disparos[d].move()
@@ -163,10 +172,13 @@ class Board:
             for i in range (len(self.enemigos[d].disparos)):
                 try:
                     if (int(self.enemigos[d].disparos[i].x) in range (int(self.plane.x - 5), int(self.plane.x + 24))) and (int(self.enemigos[d].disparos[i].y) in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
-                        if self.plane.lives == 0:
+                        self.enemigos[d].disparos.remove(self.enemigos[d].disparos[i])
+                        if (self.plane.lives - 1) == 0:
                             pyxel.quit()
                         else:
                             self.plane.lives -= 1
+                        # Efecto de sonido de colisión con enemigo.
+                        pyxel.play(1, 0)
                 except: pass
         
         # Colisión entre jugador y enemigos (usamos un try - except para evitar error de índice en actualización de frames).
@@ -204,15 +216,6 @@ class Board:
         f = pyxel.frame_count % pyxel.width
         f = f + 2
         pyxel.blt(200, f, 1, 25, 127, 15, 15, colkey = 8)
-
-        '''
-        for u in range (0, 5):
-            lista = []
-            lista.append(u)
-            for c in range (len(lista)):
-                u = pyxel.frame_count % pyxel.width  + 2
-                pyxel.blt(c, random.randint(20, 265), 1, 247, 40, 7, 6, colkey = 8)
-        '''
 
         # Dibujamos los marcadores de puntuación.
         pyxel.text(15, 5, "1 U P", 7)

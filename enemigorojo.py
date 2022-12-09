@@ -16,9 +16,6 @@ class EnemigoRojo(Enemigo):
         self.loops = random.randint(1, 3)
         self.next_loop = 70
         self.in_loop = False
-        self.step_1 = False
-        self.step_2 = False
-        self.step_3 = False
         self.save_y = 0
         self.save_x = 0
 
@@ -32,10 +29,9 @@ class EnemigoRojo(Enemigo):
         super().move()
 
         if not self.in_loop:
-            if self.x >= self.next_loop:
+            if self.x >= self.next_loop and self.loops > 0:
                 self.in_loop = True
                 self.save_y = self.y
-                self.step_1 = True
                 self.direction = 'down'
         else:
             if self.direction == 'down':
@@ -48,7 +44,7 @@ class EnemigoRojo(Enemigo):
                     self.direction = 'up'
             elif self.direction == 'up':
                 if self.save_y - 50 >= self.y:
-                    self.save_x = self.x
+                    self.loops -= 1
                     self.in_loop = False
                     self.next_loop += 70
                     self.direction = 'right'

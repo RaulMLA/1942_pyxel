@@ -1,5 +1,6 @@
 from enemigos import Enemigo
 import config
+import random
 import pyxel
 
 
@@ -16,15 +17,38 @@ class Superbombardero(Enemigo):
         self.speed = config.ENEMIGOS4_SPEED
         self.score = config.ENEMIGOS4_SCORE
 
+        self.loops = random.randint(1, 3)
+        self.next_loop = 140
+        self.in_loop = False
+        self.save_y = 0
+        self.save_x = 0
+
 
     def move(self):
         '''Método que define el movimiento de un enemigo superbombardero.'''
 
         super().move()
 
-        if self.direction == 'up':
-            if self.y <= 150:
-                self.direction = None
+        if not self.in_loop:
+            if self.y <= self.next_loop and self.loops > 0:
+                self.in_loop = True
+                self.save_x = self.x
+                self.direction = 'left'
+        else:
+            if self.direction == 'left':
+                if self.save_x - 50 >= self.x:
+                    self.save_y = self.y
+                    self.direction = 'down'
+            elif self.direction == 'down':
+                if self.save_y + 20 <= self.y:
+                    self.save_x = self.x
+                    self.direction = 'right'
+            elif self.direction == 'right':
+                if self.save_x + 50 <= self.x:
+                    self.loops -= 1
+                    self.in_loop = False
+                    self.next_loop -= 50
+                    self.direction = 'up'
 
 
     def comprobar_colision(self, x: int, y: int) -> bool:
