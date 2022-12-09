@@ -44,7 +44,13 @@ class Board:
         self.generar_enemigos()
 
         # Variable de control para la generación de enemigos.
-        self.random_number = random.randint(100, 300)
+        self.random_number = random.randint(50, 100)
+
+        # Variable de control para el bonus por eliminar enemigos rojos.
+        self.bonus = False
+
+        # Contador para comprobar el número de enemigos rojos destruidos para el bonus.
+        self.red_counter = 0
 
         # Música de fondo.
         pyxel.play(0, 1, 1, True)
@@ -98,7 +104,7 @@ class Board:
                         self.plane.loop = False    
 
             # Puesta en marcha de los enemigos.
-            if pyxel.frame_count % self.random_number == 0 and len(self.enemigos_inactivos) > 0:
+            if (pyxel.frame_count + 1) % self.random_number == 0 and len(self.enemigos_inactivos) > 0:
                 enemigo = self.enemigos_inactivos.pop(0)
                 # Los enemigos rojos se generan en grupos múltiplos de 5 y aparecen seguidos en el mismo intervalo de tiempo.
                 if enemigo.tipo == 'rojo':
@@ -120,10 +126,11 @@ class Board:
 
             # Creación de un disparo por parte del jugador.
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
-                '''if self.plane.bonus == 'doble':
+                if self.bonus:
                     self.plane.disparos.append(Disparo(self.plane.x, self.plane.y, 'plane', 'up'))
-                    self.plane.disparos.append(Disparo(self.plane.x + 15, self.plane.y, 'plane', 'up'))'''
-                self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane', 'up'))
+                    self.plane.disparos.append(Disparo(self.plane.x + 15, self.plane.y, 'plane', 'up'))
+                else:
+                    self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane', 'up'))
 
             # Movimiento de los disparos del jugador.
             for i in range(len(self.plane.disparos)):
@@ -153,6 +160,10 @@ class Board:
                     
                 for d in range (len(self.enemigos[i].disparos)):
                     self.enemigos[i].disparos[d].move()
+
+            # Si el jugador tiene bonus de tiro doble, se elimina pasado un tiempo.
+            if (pyxel.frame_count + 1) % 250 == 0 and self.bonus:
+                    self.bonus = False
 
             # Eliminamos los disparos del avión que salen de la pantalla.
             for i in range (len(self.plane.disparos)):
@@ -189,6 +200,17 @@ class Board:
                     try:
                         if self.enemigos[i].comprobar_colision(self.plane.disparos[d].x, self.plane.disparos[d].y):
                             if self.enemigos[i].lives <= 0:
+                                # Comprobamos si es rojo y si se han destruido todos los rojos de una tanda para el bonus.
+                                if self.enemigos[i].tipo == 'rojo':
+                                    print('A')
+                                    self.red_counter += 1
+                                    print('B')
+                                    if self.red_counter == 5:
+                                        self.bonus = True
+                                        self.plane.loops += 2
+                                        self.red_counter = 0
+                                elif self.enemigos[i].tipo != 'rojo' and self.red_counter > 0:
+                                    self.red_counter = 0
                                 # Efecto de sonido de destrucción de enemigo.
                                 pyxel.play(1, 5)
                                 self.marcador_1up += self.enemigos[i].score
@@ -317,7 +339,8 @@ class Board:
         count_enemigos_3 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos bombarderos.
         count_enemigos_4 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos superbombarderos.
 
-        while (count_enemigos_1 < ENEMIGOS1_MIN) or (count_enemigos_2 < ENEMIGOS2_MIN) or (count_enemigos_3 < ENEMIGOS3_MIN) or (count_enemigos_4 < ENEMIGOS4_MIN):
+        #while (count_enemigos_1 < ENEMIGOS1_MIN) or (count_enemigos_2 < ENEMIGOS2_MIN) or (count_enemigos_3 < ENEMIGOS3_MIN) or (count_enemigos_4 < ENEMIGOS4_MIN):
+        while (count_enemigos_2 < ENEMIGOS2_MIN):
             # Generación de enemigos regulares (formaciones de 10 o 20).
             generar = random.randrange(0, 21, 10)
             count_enemigos_1 += generar
@@ -358,9 +381,11 @@ class Board:
                 self.enemigos_inactivos.append(Superbombardero(random_position, self.height))
                 generar -= 1
 
+        '''
         # Se muestra en pantalla cuantos enemigos de cada tipo se van a generar en el juego.
         print('ENEMIGOS QUE SE VAN A GENERAR')
         print('Enemigos regulares: ', count_enemigos_1)
         print('Enemigos rojos: ',  count_enemigos_2)
         print('Bombarderos: ', count_enemigos_3)
         print('Superbombarderos: ', count_enemigos_4)
+        '''
