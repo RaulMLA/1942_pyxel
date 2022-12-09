@@ -8,6 +8,7 @@ from superbombardero import Superbombardero
 from plane import Plane
 from disparo import Disparo
 import pyxel
+import copy
 from config import *
 
 
@@ -43,7 +44,7 @@ class Board:
         self.generar_enemigos()
 
         # Variable de control para la generación de enemigos.
-        self.primer_enemigo = True
+        self.random_number = random.randint(100, 300)
 
         # Música de fondo.
         pyxel.play(0, 1, 1, True)
@@ -96,32 +97,26 @@ class Board:
                         self.plane.loops -= 1
                         self.plane.loop = False    
 
-            '''# Puesta en marcha de los enemigos.
-            random_number = random.randint(15, 30)
-            if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
-                enemigo = self.enemigos_inactivos.pop(0)
-                # Los enemigos rojos se generan en grupos de 7 y aparecen seguidos en el mismo intervalo de tiempo.
-                if enemigo.tipo == 'rojo':
-                    counter = 5
-                    while counter > 0:
-                        if pyxel.frame_count % 10 == 0:
-                            self.enemigos.append(enemigo)
-                            counter -= 1
-                else:
-                    self.enemigos.append(enemigo)'''
-            
             # Puesta en marcha de los enemigos.
-            if self.primer_enemigo:
-                random_number = random.randint(15, 30)
-            
-            if pyxel.frame_count % random_number == 0 and len(self.enemigos_inactivos) > 0:
+            if pyxel.frame_count % self.random_number == 0 and len(self.enemigos_inactivos) > 0:
                 enemigo = self.enemigos_inactivos.pop(0)
-                # Los enemigos rojos se generan en grupos de 7 y aparecen seguidos en el mismo intervalo de tiempo.
+                # Los enemigos rojos se generan en grupos múltiplos de 5 y aparecen seguidos en el mismo intervalo de tiempo.
                 if enemigo.tipo == 'rojo':
-                    self.enemigos.append(enemigo)
+                    self.random_number = 10
+                    if len(self.enemigos_inactivos) > 0:
+                        if self.enemigos_inactivos[0].tipo != 'rojo':
+                            self.random_number = random.randint(100, 300)
+                # Los enemigos regulares se generan en grupos múltiplos de 10 y aparecen seguidos en el mismo intervalo de tiempo.
+                elif enemigo.tipo == 'regular':
+                    self.random_number = 20
+                    if len(self.enemigos_inactivos) > 0:
+                        if self.enemigos_inactivos[0].tipo != 'regular':
+                            self.random_number = random.randint(100, 300)
                 else:
-                    self.enemigos.append(enemigo)
-                    random_number = random.randint(15, 30)
+                    self.random_number = random.randint(100, 300)
+                
+                # Ponemos en funcionamiento al enemigo.
+                self.enemigos.append(enemigo)
 
             # Creación de un disparo por parte del jugador.
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
@@ -323,27 +318,32 @@ class Board:
         count_enemigos_4 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos superbombarderos.
 
         while (count_enemigos_1 < ENEMIGOS1_MIN) or (count_enemigos_2 < ENEMIGOS2_MIN) or (count_enemigos_3 < ENEMIGOS3_MIN) or (count_enemigos_4 < ENEMIGOS4_MIN):
-            
-            
-            
-            # Generación de enemigos rojos (formación de 5).
-            generar = random.randrange(0, 6, 5)
-            random_position = random.randint(80, self.height - 80)
-            count_enemigos_2 += generar
-            while generar != 0:
-                self.enemigos_inactivos.append(EnemigoRojo(0, random_position))
-                generar -= 1
-
-            # Generación de enemigos regulares (formaciones múltiplos de 5 hasta un máximo de 20).
-            generar = random.randrange(0, 21, 5)
+            # Generación de enemigos regulares (formaciones de 10 o 20).
+            generar = random.randrange(0, 21, 10)
             count_enemigos_1 += generar
             while generar != 0:
                 random_position = random.randint(16, self.width - 16)
                 self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
                 generar -= 1
+            
+            # Generación de enemigos rojos (formación de 5).
+            generar = random.randrange(0, 6, 5)
+            if generar != 0:
+                random_position = random.randint(80, self.height - 80)
+                enemigo_1 = EnemigoRojo(0, random_position)
+                enemigo_2 = copy.deepcopy(enemigo_1)
+                enemigo_3 = copy.deepcopy(enemigo_1)
+                enemigo_4 = copy.deepcopy(enemigo_1)
+                enemigo_5 = copy.deepcopy(enemigo_1)
+                self.enemigos_inactivos.append(enemigo_1)
+                self.enemigos_inactivos.append(enemigo_2)
+                self.enemigos_inactivos.append(enemigo_3)
+                self.enemigos_inactivos.append(enemigo_4)
+                self.enemigos_inactivos.append(enemigo_5)
+                count_enemigos_2 += generar
 
-            # Generación de bombarderos (se generan de 1 a 3).
-            generar = random.randint(0, 3)
+            # Generación de bombarderos (se generan de manera individual).
+            generar = random.randint(0, 1)
             count_enemigos_3 += generar
             while generar != 0:
                 random_position = random.randint(30, self.width - 30)
@@ -357,3 +357,10 @@ class Board:
                 random_position = random.randint(70, self.width - 70)
                 self.enemigos_inactivos.append(Superbombardero(random_position, self.height))
                 generar -= 1
+
+        # Se muestra en pantalla cuantos enemigos de cada tipo se van a generar en el juego.
+        print('ENEMIGOS QUE SE VAN A GENERAR')
+        print('Enemigos regulares: ', count_enemigos_1)
+        print('Enemigos rojos: ',  count_enemigos_2)
+        print('Bombarderos: ', count_enemigos_3)
+        print('Superbombarderos: ', count_enemigos_4)
