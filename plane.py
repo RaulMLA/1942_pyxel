@@ -10,17 +10,23 @@ class Plane:
         self.x = x
         self.y = y
         # Sprites para las animaciones del avión.
-        self.sprites = [
+        self.sprites_bank = [
             (0, 1, 1, 24, 16),
             (0, 27, 1, 24, 16),
             (0, 53, 1, 24, 16),
-            (0, 79, 1, 24, 16)
+            (0, 79, 1, 24, 16),
+
+            (0, 205, 71, 28, 17),
+            (0, 172, 70, 30, 21),
+            (0, 135, 68, 32, 25)
         ]
+        self.sprites = []
         self.index = 0
-        self.sprite = self.sprites[self.index]
+        self.sprite = None
         self.lives = config.PLAYER_LIVES
         self.speed = config.PLAYER_SPEED
         self.disparos = []
+        self.loops = config.PLAYER_LOOPS
         self.loop = False
 
 
@@ -43,26 +49,21 @@ class Plane:
     def make_loop(self):
         '''Método que permite al avión hacer un loop para evitar ser abatido.'''
         self.loop = True
-        #self.loop_animation()
-        print('Activado')
-        
+
             
     def animation(self):
         '''Método que anima el avión cambiando de sprite.'''
 
-        self.index += 1
+        if self.loop:
+            self.sprites = self.sprites_bank[4:7]
+            if pyxel.frame_count % 15 == 0:
+                self.index += 1
+        else:
+            self.sprites = self.sprites_bank[0:4]
+            self.index += 1
 
         if self.index >= (len(self.sprites)):
             self.index = 0
 
         self.sprite = self.sprites[self.index]
 
-    def loop_animation(self):
-        '''Método que anima el avión cuando hace un loop.'''
-
-        self.index += 1
-
-        if self.index >= (len(self.sprites)):
-            self.index = 0
-
-        self.sprite = self.sprites[self.index]

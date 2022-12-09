@@ -76,15 +76,19 @@ class Board:
 
         # Movimiento loop del jugador para evitar ser abatido.
         if pyxel.btn(pyxel.KEY_Z):
-            self.plane.make_loop()
-
+            if self.plane.loops > 0:
+                self.plane.make_loop()
+            
         # Tiempo máximo que dura un loop.
-        if pyxel.frame_count % 50 == 0:
-            print('Desactivado')
-            self.plane.loop = False
-        
+        if self.plane.make_loop:
+            if pyxel.frame_count % 45 == 0:
+                if self.plane.loop:
+                    self.plane.loops -= 1
+                    self.plane.loop = False
+                
+
         # Creación, movimiento y control de un disparo por parte del jugador.
-        if pyxel.btnp(pyxel.KEY_SPACE):
+        if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
             self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y))
         
         for i in range(len(self.plane.disparos)):
@@ -96,7 +100,7 @@ class Board:
 
         for i in range (len(self.enemigos)):
             if random.randint(1, 100) < 4:
-                self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 4, self.enemigos[i].y))
+                self.enemigos[i].disparos.append(Disparo(self.enemigos[i].x + 5, self.enemigos[i].y))
             for d in range (len(self.enemigos[i].disparos)):
                 self.enemigos[i].disparos[d].move('down')
 
@@ -131,7 +135,7 @@ class Board:
         for d in range (len(self.enemigos)):
             for i in range (len(self.enemigos[d].disparos)):
                 try:
-                    if (self.enemigos[d].disparos[i].x in range (int(self.plane.x - 5), int(self.plane.x + 16))) and (self.enemigos[d].disparos[i].y in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
+                    if (self.enemigos[d].disparos[i].x in range (int(self.plane.x - 5), int(self.plane.x + 24))) and (self.enemigos[d].disparos[i].y in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
                         if self.plane.lives == 0:
                             pyxel.quit()
                         else:
