@@ -76,7 +76,7 @@ class Board:
 
     def update(self):
         '''
-        Función que actualiza el estado del tablero.
+        Método que actualiza el estado del tablero.
         (*) Hay bucles de enemigos que se podrían optimizar fusionándolos en uno solo,
         pero se han considerado separados para facilitar la lectura y comprensión del código.
         '''
