@@ -93,7 +93,7 @@ class Board:
         for explosion in self.explosiones:
             if explosion.max < pyxel.frame_count:
                 self.explosiones.remove(explosion)
-
+        
         if self.start_condition:
             # Reestablecemos la configuración si el usuario ha perdido una vida.
             if self.loose_life:
@@ -185,7 +185,7 @@ class Board:
                         enemigo.disparos.append(Disparo(enemigo.x + 30, enemigo.y + 30, 'enemigo', 'downleft'))
                         enemigo.disparos.append(Disparo(enemigo.x + 30, enemigo.y + 30, 'enemigo', 'down'))
                         enemigo.disparos.append(Disparo(enemigo.x + 30, enemigo.y + 30, 'enemigo', 'downright'))
-                    
+            
                 for disparo in enemigo.disparos:
                     disparo.move()
 
@@ -219,7 +219,7 @@ class Board:
             # Colisión entre disparos y enemigos.
             for disparo in self.plane.disparos:
                 for enemigo in self.enemigos:
-                    if enemigo.comprobar_colision(disparo.x, disparo.y):
+                    if enemigo.comprobar_colision(disparo.x, disparo.y, 'disparo'):
                         self.plane.disparos.remove(disparo)
                         if enemigo.lives <= 0:
                             # Comprobamos si es rojo y si se han destruido todos los rojos de una tanda para el bonus.
@@ -240,7 +240,7 @@ class Board:
             # Colisión entre disparos y jugador.
             for enemigo in self.enemigos:
                 for disparo in enemigo.disparos:
-                    if (int(disparo.x) in range (int(self.plane.x - 5), int(self.plane.x + 24))) and (int(disparo.y) in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
+                    if self.plane.comprobar_colision(disparo.x, disparo.y) and not self.plane.loop:
                         enemigo.disparos.remove(disparo)
                         self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'avion'))
                         # Efecto de sonido de disparo acertado a enemigo.
@@ -249,7 +249,7 @@ class Board:
             
             # Colisión entre jugador y enemigos.
             for enemigo in self.enemigos:
-                if (int(self.plane.x) in range (int(enemigo.x) - 5, int(enemigo.x) + 16) and (int(self.plane.y) in range (int(enemigo.y) - 16, int(enemigo.y) + 16))):
+                if enemigo.comprobar_colision(self.plane.x, self.plane.y, 'avion') and not self.plane.loop:
                     self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'avion'))
                     # Efecto de sonido de colisión con enemigo.
                     pyxel.play(1, 4)
@@ -371,20 +371,21 @@ class Board:
         count_enemigos_3 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos bombarderos.
         count_enemigos_4 = 0    # Variable para asegurarnos de contar con el número mínimo de enemigos superbombarderos.
 
+        
         while (count_enemigos_1 < ENEMIGOS1_MIN) or (count_enemigos_2 < ENEMIGOS2_MIN) or (count_enemigos_3 < ENEMIGOS3_MIN) or (count_enemigos_4 < ENEMIGOS4_MIN):
             # Generación de enemigos regulares (formaciones de 10 o 20).
             generar = random.randrange(0, 21, 10)
             count_enemigos_1 += generar
             while generar != 0:
                 random_position = random.randint(16, self.width - 16)
-                self.enemigos_inactivos.append(EnemigoRegular(random_position, 0))
+                self.enemigos_inactivos.append(EnemigoRegular(random_position, -15))
                 generar -= 1
             
             # Generación de enemigos rojos (formación de 5).
             generar = random.randrange(0, 6, 5)
             if generar != 0:
                 random_position = random.randint(80, self.height - 80)
-                enemigo_1 = EnemigoRojo(0, random_position)
+                enemigo_1 = EnemigoRojo(-15, random_position)
                 enemigo_2 = copy.deepcopy(enemigo_1)
                 enemigo_3 = copy.deepcopy(enemigo_1)
                 enemigo_4 = copy.deepcopy(enemigo_1)
@@ -401,7 +402,7 @@ class Board:
             count_enemigos_3 += generar
             while generar != 0:
                 random_position = random.randint(30, self.width - 30)
-                self.enemigos_inactivos.append(Bombardero(random_position, 0))
+                self.enemigos_inactivos.append(Bombardero(random_position, -24))
                 generar -= 1
             
             # Generación de superbombarderos (se generan de manera individual).
@@ -409,7 +410,7 @@ class Board:
             count_enemigos_4 += generar
             while generar != 0:
                 random_position = random.randint(70, self.width - 70)
-                self.enemigos_inactivos.append(Superbombardero(random_position, self.height))
+                self.enemigos_inactivos.append(Superbombardero(random_position, self.height + 1))
                 generar -= 1
 
         '''

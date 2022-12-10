@@ -50,11 +50,17 @@ class EnemigoRojo(Enemigo):
                     self.direction = 'right'
 
 
-    def comprobar_colision(self, x: int, y: int) -> bool:
-        '''Método que comprueba si el disparo impacta en el enemigo.'''
+    def comprobar_colision(self, x: int, y: int, tipo: str) -> bool:
+        '''Método que comprueba si se impacta con el enemigo.'''
 
-        if int(x) in range (int(self.x) - 10, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 15):
-            self.lives -= 1
-            return True
+        if tipo == 'disparo':
+            if int(x) in range (int(self.x) - 11, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
+                self.lives -= 1
+                return True
+        # tipo == 'avion':
         else:
-            return False
+            if int(x) in range (int(self.x) - 25, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
+                self.lives -= 1
+                return True
+
+        return False
