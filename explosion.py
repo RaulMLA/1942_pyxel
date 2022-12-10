@@ -2,27 +2,29 @@ import pyxel
 
 
 class Explosion:
-    def __init__(self, x, y):
+    def __init__(self, x, y, tipo):
         self.x = x
         self.y = y
-        self.frame = pyxel.frame_count
+        
+        if tipo == 'avion':
+            self.index = 1
+        elif tipo == 'regular':
+            self.index = 0
+        elif tipo == 'rojo':
+            self.index = 0
+        elif tipo == 'bombardero':
+            self.index = 1
+        elif tipo == 'superbombardero':
+            self.index = 2
+        
+        self.max = pyxel.frame_count + 7
+        
         self.sprites = [
-            # Avión, regular, rojo.
+            # Regular, rojo.
             (0, 105, 18, 14, 12),
-            # Bombardero.
-            (0, 216, 37, 31, 21),
+            # Avión, bombardero.
+            (0, 216, 37, 31, 29),
             # Superbombardero.
             (0, 128, 94, 63, 48)
         ]
-        self.index = 0
         self.sprite = self.sprites[self.index]
-        self.done = False
-
-
-    def update(self):
-        self.frame = (self.frame + 1) % 8
-        if self.frame == 7:
-            self.done = True
-
-    def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)

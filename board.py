@@ -3,6 +3,7 @@ from enemigos import Enemigo
 from enemigoregular import EnemigoRegular
 from enemigorojo import EnemigoRojo
 from bombardero import Bombardero
+from explosion import Explosion
 from fondo import Fondo
 from superbombardero import Superbombardero
 from plane import Plane
@@ -43,6 +44,9 @@ class Board:
         # Generamos los enemigos.
         self.generar_enemigos()
 
+        # Explosiones de los enemigos.
+        self.explosiones = []
+
         # Variable de control para la generación de enemigos.
         self.random_number = random.randint(50, 100)
 
@@ -58,7 +62,7 @@ class Board:
         pyxel.play(0, 3, 1, True)
 
         # Condición de inicio del juego.
-        self.start_condition = True
+        self.start_condition = False
 
         # El jugador ha perdido una vida.
         self.loose_life = False
@@ -84,6 +88,11 @@ class Board:
         # Jugador sale del juego pulsando la tecla Q.
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
+
+        # Control de explosiones.
+        for explosion in self.explosiones:
+            if explosion.max < pyxel.frame_count:
+                self.explosiones.remove(explosion)
 
         if self.start_condition:
             # Reestablecemos la configuración si el usuario ha perdido una vida.
@@ -226,12 +235,14 @@ class Board:
                             pyxel.play(1, 5)
                             self.marcador_1up += enemigo.score
                             self.enemigos.remove(enemigo)
+                            self.explosiones.append(Explosion(enemigo.x, enemigo.y, enemigo.tipo))
             
             # Colisión entre disparos y jugador.
             for enemigo in self.enemigos:
                 for disparo in enemigo.disparos:
                     if (int(disparo.x) in range (int(self.plane.x - 5), int(self.plane.x + 24))) and (int(disparo.y) in range (int(self.plane.y), int(self.plane.y + 16))) and not self.plane.loop:
                         enemigo.disparos.remove(disparo)
+                        self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'avion'))
                         # Efecto de sonido de disparo acertado a enemigo.
                         pyxel.play(1, 0)
                         self.stop_game()
@@ -239,6 +250,7 @@ class Board:
             # Colisión entre jugador y enemigos.
             for enemigo in self.enemigos:
                 if (int(self.plane.x) in range (int(enemigo.x) - 5, int(enemigo.x) + 16) and (int(self.plane.y) in range (int(enemigo.y) - 16, int(enemigo.y) + 16))):
+                    self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'avion'))
                     # Efecto de sonido de colisión con enemigo.
                     pyxel.play(1, 4)
                     self.stop_game()
@@ -250,7 +262,7 @@ class Board:
             # Animación de los enemigos.
             for i in range (len(self.enemigos)):
                 self.enemigos[i].animation()
-
+    
 
     def draw(self):
         '''Método que permite dibujar cada elemento en la ventana.'''
@@ -318,9 +330,13 @@ class Board:
                 pyxel.text(108, 152, 'HAS GANADO', 7)
                 pyxel.text(99, 164, 'PUNTUACION: ' + str(self.marcador_1up), 7)
                 pyxel.blt(95, 200, 0, 1, 192, 64, 16, colkey = 8)
+        
+        # Dibujamos las explosiones.
+        for explosion in self.explosiones:
+            pyxel.blt(explosion.x, explosion.y, *explosion.sprite, 8)
 
         # Animación inicial.
-        if self.loose_life:
+        if not self.start_condition and not self.loose and not self.loose_life:
             # Imagen de fondo.
             #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
@@ -332,13 +348,13 @@ class Board:
             pyxel.text(55, 152, '>> PULSA ESC O Q PARA QUITAR EL JUEGO', 7)
             pyxel.blt(95, 190, 0, 1, 192, 64, 16, colkey = 8)
         
-        # Animación jugador pierde una vida.
-        if not self.start_condition and self.plane.lives < PLAYER_LIVES:
+        # Animación cuando el jugador pierde una vida.
+        if self.loose_life:
             # Imagen de fondo.
             #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
             # Color de fondo.
-            pyxel.cls(1)
+            #pyxel.cls(1)
 
             pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
             pyxel.text(55, 128, 'HAS PERDIDO UNA VIDA', 7)
@@ -409,14 +425,15 @@ class Board:
     def stop_game(self):
         '''Método para detener el juego si el usuario pierde una vida.'''
 
-        enemis = self.enemigos.copy()
+        self.loose_life = True
+        self.start_condition = False
+        self.plane.lives -= 1
+
+        copia_enemigos = self.enemigos.copy()
         self.plane.disparos = []
 
-        for enemigo in enemis:
+        for enemigo in copia_enemigos:
             self.enemigos.remove(enemigo)
             enemigo.reset()
             self.enemigos_inactivos.append(enemigo)
         
-        self.loose_life = True
-        self.start_condition = False
-        self.plane.lives -= 1
