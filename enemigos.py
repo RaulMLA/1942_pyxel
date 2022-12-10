@@ -8,6 +8,10 @@ class Enemigo:
         self.tipo = None
         self.direction = None
 
+        # Posiciones que se asignaron al enemigo al iniciar el juego.
+        self.start_x = x
+        self.start_y = y
+
         # Sprites para las animaciones de los enemigos.
         self.sprites_bank = [
             # Regular -> Dirección 'down' ([0:4])
@@ -135,3 +139,23 @@ class Enemigo:
             self.index = 0
             
         self.sprite = self.sprites[self.index]
+
+
+    def reset(self):
+        '''Método que hace reset a la posición del enemigo para volver a la inicial.'''
+        self.x = self.start_x
+        self.y = self.start_y
+        self.disparos = []
+
+        if self.tipo == 'rojo':
+            self.direction = 'right'
+        elif self.tipo == 'bombardero':
+            self.direction = random.choice(['down', 'downleft', 'downright'])
+        elif self.tipo == 'superbombardero':
+            self.direction = 'up'
+        elif self.tipo == 'regular':
+            self.direction = random.choice(['down', 'downleft', 'downright'])
+
+    def __repr__(self) -> str:
+        '''Representación del enemigo para fines de debug.'''
+        return f'Enemigo({self.tipo}, {self.x}, {self.y}, {self.direction})'
