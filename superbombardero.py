@@ -1,7 +1,6 @@
 from enemigos import Enemigo
 import config
 import random
-import pyxel
 
 
 class Superbombardero(Enemigo):

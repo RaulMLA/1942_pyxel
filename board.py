@@ -159,6 +159,8 @@ class Board:
                     self.plane.disparos.append(Disparo(self.plane.x + 15, self.plane.y, 'plane', 'up'))
                 else:
                     self.plane.disparos.append(Disparo(self.plane.x + 7, self.plane.y, 'plane', 'up'))
+                # Sonido de disparo.
+                pyxel.play(1, 6)
 
             # Movimiento de los disparos del jugador.
             for i in range(len(self.plane.disparos)):
@@ -254,7 +256,6 @@ class Board:
                     # Efecto de sonido de colisión con enemigo.
                     pyxel.play(1, 4)
                     self.stop_game()
-                        
 
             # Animación del avión.
             self.plane.animation()
@@ -281,12 +282,14 @@ class Board:
 
             # Dibujamos los marcadores de puntuación.
             pyxel.text(15, 5, "1 U P", 7)
-            pyxel.text(90, 5, "H I G H  S C O R E", 10)
-            pyxel.text(205, 5, "L I V E S", 14)
+            pyxel.text(60, 5, "H I G H  S C O R E", 10)
+            pyxel.text(155, 5, "L O O P S", 11)
+            pyxel.text(210, 5, "L I V E S", 14)
 
             pyxel.text(15, 15, str(self.marcador_1up), 13)
-            pyxel.text(90, 15, str(self.marcador_highscore), 13)
-            pyxel.text(205, 15, str(self.plane.lives), 13)
+            pyxel.text(60, 15, str(self.marcador_highscore), 13)
+            pyxel.text(155, 15, str(self.plane.loops), 13)
+            pyxel.text(210, 15, str(self.plane.lives), 13)
 
             # Dibujamos el avión.
             pyxel.blt(self.plane.x, self.plane.y, *self.plane.sprite, colkey = 8)
@@ -384,17 +387,15 @@ class Board:
             # Generación de enemigos rojos (formación de 5).
             generar = random.randrange(0, 6, 5)
             if generar != 0:
+                counter = 5
                 random_position = random.randint(80, self.height - 80)
                 enemigo_1 = EnemigoRojo(-15, random_position)
-                enemigo_2 = copy.deepcopy(enemigo_1)
-                enemigo_3 = copy.deepcopy(enemigo_1)
-                enemigo_4 = copy.deepcopy(enemigo_1)
-                enemigo_5 = copy.deepcopy(enemigo_1)
-                self.enemigos_inactivos.append(enemigo_1)
-                self.enemigos_inactivos.append(enemigo_2)
-                self.enemigos_inactivos.append(enemigo_3)
-                self.enemigos_inactivos.append(enemigo_4)
-                self.enemigos_inactivos.append(enemigo_5)
+                
+                while counter > 0:
+                    enemigo = copy.deepcopy(enemigo_1)
+                    self.enemigos_inactivos.append(enemigo)
+                    counter -= 1
+
                 count_enemigos_2 += generar
 
             # Generación de bombarderos (se generan de manera individual).

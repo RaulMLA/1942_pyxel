@@ -1,7 +1,6 @@
 from enemigos import Enemigo
 import random
 import config
-import pyxel
 
 
 class EnemigoRojo(Enemigo):

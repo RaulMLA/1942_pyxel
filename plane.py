@@ -1,5 +1,4 @@
 import config
-from disparo import Disparo
 import pyxel
 
 

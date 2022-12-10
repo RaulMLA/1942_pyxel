@@ -3,6 +3,8 @@ import pyxel
 
 class Explosion:
     def __init__(self, x, y, tipo):
+        '''Inicializa la explosión.'''
+
         self.x = x
         self.y = y
         
@@ -27,4 +29,5 @@ class Explosion:
             # Superbombardero.
             (0, 128, 94, 63, 48)
         ]
+        
         self.sprite = self.sprites[self.index]

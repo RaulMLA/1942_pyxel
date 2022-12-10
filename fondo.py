@@ -3,6 +3,7 @@ from isla import Isla
 
 class Fondo:
     def __init__(self):
+        ''' Inicialización del fondo.'''
         self.islas = []
 
         # Islas predefinidas.
@@ -14,5 +15,6 @@ class Fondo:
 
 
     def move(self):
+        '''Movimiento del fondo.'''
         for isla in self.islas:
             isla.move()

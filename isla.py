@@ -3,6 +3,7 @@ from config import *
 
 class Isla:
     def __init__(self, tipo: str):
+        '''Inicialización de la isla.'''
         self.x = 0
         self.y = 0
         self.tipo = tipo
@@ -42,6 +43,7 @@ class Isla:
             self.y = -250
         
     def move(self):
+        '''Movimiento de la isla.'''''
         self.y += 1
 
         if self.y > BOARD_SIZE[1] + 10:
