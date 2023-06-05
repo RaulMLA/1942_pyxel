@@ -1,4 +1,4 @@
-# <img src="src/1942_logo.png" style="max-width: 300px;">
+# <img src="src/1942_logo.png" style="width: 300px;">
 
 The objective of the project is to implement the video game 1942. The game is a shooting game where the player controls an airplane that must destroy enemy planes and avoid getting destroyed by enemy missiles. The game is set in a 2D scenario, where the player moves along the horizontal axis and shoots along the vertical axis. The game ends when the player is defeated by the enemies or when the player defeats all the enemies.
 
@@ -7,12 +7,12 @@ The project has been developed using the [Pyxel library](https://github.com/kita
 The video game is developed through classes that work cooperatively through their respective attributes and methods.
 
 <p>
-<img src="src/image_1.png" width="320">
-<img src="src/image_1.png" width="320">
-<img src="src/image_1.png" width="320">
-<img src="src/image_1.png" width="320">
-<img src="src/image_1.png" width="320">
-<img src="src/image_1.png" width="320">
+<img src="src/image_1.png" style="width: 300px;">
+<img src="src/image_2.png" style="width: 300px;">
+<img src="src/video_1.gif" style="width: 300px;">
+<img src="src/video_2.gif" style="width: 300px;">
+<img src="src/image_3.png" style="width: 300px;">
+<img src="src/image_4.png" style="width: 300px;">
 </p>
 
 
