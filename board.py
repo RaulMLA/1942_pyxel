@@ -318,7 +318,7 @@ class Board:
 
                 pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
                 pyxel.text(95, 125, '--- GAME OVER ---', 7)
-                pyxel.text(105, 152, 'HAS PERDIDO', 7)
+                pyxel.text(105, 152, 'YOU LOOSE', 7)
                 pyxel.blt(95, 188, 0, 1, 192, 64, 16, colkey = 8)
 
             if len(self.enemigos_inactivos) == 0 and len(self.enemigos) == 0 and not self.loose:
@@ -330,8 +330,8 @@ class Board:
 
                 pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
                 pyxel.text(93, 125, '--- GAME OVER ---', 7)
-                pyxel.text(108, 152, 'HAS GANADO', 7)
-                pyxel.text(99, 164, 'PUNTUACION: ' + str(self.marcador_1up), 7)
+                pyxel.text(108, 152, 'YOU WIN', 7)
+                pyxel.text(99, 164, 'SCORE: ' + str(self.marcador_1up), 7)
                 pyxel.blt(95, 200, 0, 1, 192, 64, 16, colkey = 8)
         
         # Dibujamos las explosiones.
@@ -347,8 +347,8 @@ class Board:
             pyxel.cls(1)
 
             pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
-            pyxel.text(55, 140, '>> PULSA ENTER PARA EMPEZAR EL JUEGO', 7)
-            pyxel.text(55, 152, '>> PULSA ESC O Q PARA QUITAR EL JUEGO', 7)
+            pyxel.text(55, 140, '>> PRESS ENTER TO START THE GAME', 7)
+            pyxel.text(55, 152, '>> PRESS ESC OR Q TO QUIT THE GAME', 7)
             pyxel.blt(95, 190, 0, 1, 192, 64, 16, colkey = 8)
         
         # Animación cuando el jugador pierde una vida.
@@ -360,9 +360,9 @@ class Board:
             #pyxel.cls(1)
 
             pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
-            pyxel.text(55, 128, 'HAS PERDIDO UNA VIDA', 7)
-            pyxel.text(55, 140, '>> PULSA ENTER PARA CONTINUAR', 7)
-            pyxel.text(55, 152, '>> PULSA ESC O Q PARA QUITAR EL JUEGO', 7)
+            pyxel.text(55, 128, 'YOU HAVE LOST A LIFE', 7)
+            pyxel.text(55, 140, '>> PRESS ENTER TO CONTINUE', 7)
+            pyxel.text(55, 152, '>> PRESS ESC OR Q TO QUIT THE GAME', 7)
             pyxel.blt(95, 190, 0, 1, 192, 64, 16, colkey = 8)
 
 

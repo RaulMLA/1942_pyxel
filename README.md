@@ -1,68 +1,160 @@
-# Objetivo
-El objetivo del proyecto es implementar el videojuego 1942. El videojuego es un juego de disparos en el que el jugador controla un avión que debe destruir a los aviones enemigos y evitar que los misiles enemigos lo destruyan. El juego se desarrolla en un escenario de 2D, en el que el jugador se mueve en el eje horizontal y dispara en el eje vertical. El juego finaliza cuando el jugador es derrotado por los enemigos o cuando el jugador derrota a todos los enemigos.
-<br><br>
-El proyecto ha sido desarrollado mediante la librería Pyxel de Python, un motor de videojuegos retro creado por Takashi Kitao en 2018.
-<br><br>
-El videojuego mediante el desarrollo de clases que funcionan de manera cooperada mediante sus respectivos atributos y métodos.
+# <img src="src/1942_logo.png" style="max-width: 300px;">
 
-# Contenidos
-- [Descripción de clases, atributos y métodos](#descripción-de-clases-atributos-y-métodos)
+The objective of the project is to implement the video game 1942. The game is a shooting game where the player controls an airplane that must destroy enemy planes and avoid getting destroyed by enemy missiles. The game is set in a 2D scenario, where the player moves along the horizontal axis and shoots along the vertical axis. The game ends when the player is defeated by the enemies or when the player defeats all the enemies.
+
+The project has been developed using the [Pyxel library](https://github.com/kitao/pyxel) in Python, a retro game engine created by Takashi Kitao in 2018.
+
+The video game is developed through classes that work cooperatively through their respective attributes and methods.
+
+<p>
+<img src="src/image_1.png" width="320">
+<img src="src/image_1.png" width="320">
+<img src="src/image_1.png" width="320">
+<img src="src/image_1.png" width="320">
+<img src="src/image_1.png" width="320">
+<img src="src/image_1.png" width="320">
+</p>
+
+
+# Content
+
+- [Execution](#execution)
+  - [Pyxel Installation](#pyxel-installation)
+    - [macOS](#macos)
+    - [Windows](#windows)
+    - [Linux](#linux)
+  - [Run the Game](#run-the-game)
+- [Description of Classes, Attributes, and Methods](#description-of-classes-attributes-and-methods)
   - [Board](#board)
-  - [Enemigo](#enemigo)
+  - [Enemy](#enemy)
   - [Plane](#plane)
-  - [Disparo](#disparo)
-  - [Fondo](#fondo)
-  - [Isla](#isla)
-  - [Explosión](#explosión)
-- [Descripción de algoritmos utilizados](#descripción-de-algoritmos-utilizados)
-    - [generar_enemigos](#generar_enemigos)
-    - [stop_game](#stop_game)
-    - [reset](#reset)
-    - [comprobar_colision](#comprobar_colision)
-- [Trabajo desarrollado](#trabajo-desarrollado)
-    - [Funcionalidades incluidas](#funcionalidades-incluidas)
-    - [Partes no implementadas](#partes-no-implementadas)
-    - [Funcionalidades extra](#funcionalidades-extra)
-- [Conclusiones](#conclusiones)
+  - [Shot](#shot)
+  - [Background](#background)
+  - [Island](#island)
+  - [Explosion](#explosion)
+- [Description of Used Algorithms](#description-of-used-algorithms)
+  - [generate_enemies](#generate_enemies)
+  - [stop_game](#stop_game)
+  - [reset](#reset)
+  - [check_collision](#check_collision)
+- [Functionalities](#functionalities)
 
-# Descripción de clases, atributos y métodos
-Para el desarrollo del proyecto, se han utilizado clases para representar los diferentes objetos del juego. Algunos de ellos como podría ser el caso de los enemigos, cuentan con diferentes tipos que han sido derivados mediante herencia de clases, de modo que las clases hijas heredan toda la información de la clase padre y modifican las funcionalidades que difieren del mismo. En esta sección, se detallarán los puntos más importantes de cada una de las clases implementadas.
-<br><br>
-Destacar que, de manera general, los principales atributos de cada clase son las coordenadas (x, y) y el banco de sprites para los aspectos así como su aspecto en uso, sprite.
+
+# Execution
+
+## Pyxel Installation
+
+### macOS
+
+After installing [Python3](https://www.python.org/) (version 3.7 or higher), run the following command:
+
+```sh
+python3 -m pip install -U pyxel
+```
+
+If you use Python3, which is installed by default on macOS, please add `sudo` to the beginning of the above command to enable `pyxel` command.
+
+### Windows
+
+After installing [Python3](https://www.python.org/) (version 3.7 or higher), run the following command:
+
+```sh
+pip install -U pyxel
+```
+
+If you install Python using the official installer, please check the `Add Python 3.x to PATH` checkbox to enable `pyxel` command.
+
+### Linux
+
+After installing the SDL2 package (`libsdl2-dev` for Ubuntu), [Python3](https://www.python.org/) (version 3.7 or higher), and `python3-pip`, run the following command:
+
+```sh
+sudo pip3 install -U pyxel
+```
+
+## Run the Game
+
+After installing Pyxel and either downloading or cloning this repository, run the following command:
+
+```sh
+python3 main.py
+```
+
+
+# Description of classes, attributes, and methods
+
+For the development of the project, classes have been used to represent the different objects of the game. Some of them, such as the enemies, have different types that have been derived through class inheritance. This means that the child classes inherit all the information from the parent class and modify the functionalities that differ from it. In this section, we will detail the most important points of each of the implemented classes.
+
+It is worth noting that, in general, the main attributes of each class are the coordinates (x, y) and the sprite bank for the visuals, as well as their active appearance, sprite.
 
 ## Board
-La clase Board es el núcleo principal del proyecto. Es la encargada de inicializar todo el contenido que va a ser observado por el usuario así como de actualizar las distintas funcionalidades y de dibujar en pantalla el contenido en cada actualización de frame. Respecto a los atributos, contamos con un avión (jugador), una lista de enemigos y otros como las dimensiones de la ventana (tablero) o las condiciones de inicio. Cuenta con los métodos update y draw, las cuales se encargan de actualizar y dibujar en cada frame. Además, cuenta con los métodos stop_game y generar_enemigos, los cuales serán explicados posteriormente. El método update cuenta con varios bucles que recorren las listas de enemigos y disparos y actualizan el estado del juego atendiendo a los principales requisitos. Recalcar aquí que hay bucles de enemigos que se podrían optimizar fusionándose en uno solo, pero se han considerado separados para facilitar la lectura y comprensión del código.
 
-## Enemigo
-La clase Enemigo representa cada enemigo generado durante el transcurso del juego. En nuestro caso, pueden ser de cuatro tipos: regular, rojo, bombardero y superbombardero, los cuales se representan con cuatro clases hijas que heredan los atributos y métodos de la clase padre. Dentro de la clase Enemigo contamos con el método move, el cuál permite al enemigo moverse dependiendo de su dirección. Además, contamos con los métodos animation y reset. El método animation se encarga de seleccionar el aspecto del enemigo dependiendo del tipo y dirección del mismo. Por otra parte, el método reset se encarga de devolver al enemigo a su estado inicial como se explicará posteriormente. Por último, hemos utilizado el ‘magic method’ de Python __repr__ para representar al enemigo con fines de depuración durante el desarrollo. Dentro de las clases hijas, además de modificaciones en la clase move del padre, contamos con un método llamado comprobar_colision el cuál será detallado en la sección de algoritmos implementados posteriormente. Los enemigos cuentan con atributos para controlar datos como su lista de disparos, vida, velocidad o puntuación que proporcionan.
+The Board class is the core of the project. It is responsible for initializing all the content that will be displayed to the user, as well as updating the different functionalities and drawing the content on the screen in each frame update. As for the attributes, it includes a plane (player), a list of enemies, and others such as the window (board) dimensions or the starting conditions. It has the `update` and `draw` methods, which are responsible for updating and drawing in each frame. Additionally, it has the `stop_game` and `generate_enemies` methods, which will be explained later. The `update` method includes several loops that iterate through the lists of enemies and shots, updating the game state according to the main requirements. It is worth noting that there are enemy loops that could be optimized by merging them into a single loop, but they have been kept separate to enhance code readability and comprehension.
+
+## Enemy
+
+The Enemy class represents each enemy generated during the game. In our case, enemies can be of four types: regular, red, bomber, and super bomber, which are represented by four child classes that inherit the attributes and methods from the parent class. Within the Enemy class, we have the `move` method, which allows the enemy to move depending on its direction. Additionally, we have the `animation` and `reset` methods. The `animation` method is responsible for selecting the enemy's appearance based on its type and direction. On the other hand, the `reset` method restores the enemy to its initial state, as explained later. Finally, we have used the Python "magic method" `__repr__` to represent the enemy for debugging purposes during development. In the child classes, in addition to modifications in the parent class's `move` method, we have a method called `check_collision`, which will be detailed in the section of implemented algorithms later on. The enemies have attributes to control data such as their list of shots, health, speed, and provided score.
 
 ## Plane
-La clase Plane representa al jugador (avión) del juego. Es el encargado de disparar a los enemigos y puede moverse libremente usando las flechas del teclado además de hacer loops para evitar ser abatido. El método move permite al jugador moverse dependiendo de la dirección. El método make_loop permite al usuario hacer un loop para evitar ser abatido. El método animation permite realizar la animación de las hélices así como de los loops. Por último, el método comprobar_colision detecta colisiones con otros enemigos o disparos enemigos, pero será explicado con detalle posteriormente en la sección de algoritmos utilizados. El avión cuenta con atributos como su vida, velocidad, lista de disparos o loops restantes.
 
-## Disparo
-La clase Disparo representa un disparo por parte del jugador o del enemigo. Dependiendo del tipo, se utiliza un aspecto u otro y una dirección u otra atendiendo a las constantes del proyecto. Cuenta con el método move, el cuál mueve la bala por la pantalla dependiendo de su dirección y velocidad.
+The Plane class represents the player's airplane in the game. It is responsible for shooting at enemies and can move freely using the arrow keys, as well as perform loops to avoid being shot down. The `move` method allows the player to move based on the direction. The `make_loop` method enables the player to perform a loop to evade enemy fire. The `animation` method handles the animation of the propellers and loops. Finally, the `check_collision` method detects collisions with other enemies or enemy shots, but it will be explained in detail later in the section on used algorithms. The plane has attributes such as its health, speed, list of shots, and remaining loops.
 
-## Fondo
-La clase Fondo representa el fondo del juego. Cuenta con el método move para mover el contenido (únicamente islas en nuestro caso) en cada frame del juego. Además, podemos observar el atributo islas, el cual es una lista que contiene todos los objetos de tipo Isla que veremos a continuación.
+## Shot
 
-## Isla
-La clase Isla representa una isla del fondo en el juego. Cuenta con el método move que permite a la isla desplazarse a una velocidad determinada. Además, el aspecto es distinto dependiendo del tipo de isla, por lo que se usa un atributo para determinar el mismo.
+The Shot class represents a shot fired by the player or the enemy. Depending on the type, a different appearance and direction are used based on the project's constants. It has the `move` method, which moves the bullet across the screen according to its direction and speed.
 
-## Explosión
-La clase Explosión es simple, simplemente se inicializa con sus coordenadas y un aspecto diferente dependiendo del tipo de explosión que se desee. Por ejemplo, la explosión de un bombardero será ampliamente mayor que la de un avión regular o rojo.
+## Background
 
-# Descripción de algoritmos utilizados
-En el desarrollo del juego, se han implementado varios algoritmos en métodos como explicaremos a continuación. Se muestran los más relevantes, pero se han implementado más para satisfacer las necesidades de cada funcionalidad. Además de esto, el método update de la clase Board cuenta con los algoritmos necesarios para generar y eliminar enemigos, disparos y otros objetos como explosiones o islas que se generan durante el transcurso del mismo.
+The Background class represents the game's background. It has the `move` method to move the content (only islands in our case) in each game frame. Additionally, we can see the `islands` attribute, which is a list containing all the Island objects that will be described next.
 
-## generar_enemigos
-Este método se encuentra en la clase Board y se encarga de generar los enemigos de manera automática y aleatoria siguiendo los patrones de formaciones y número mínimo de cada tipo de enemigos indicados en el enunciado. Esto es, se generan como mínimo 20 aviones regulares, 5 aviones rojos, 2 bombarderos y 1 superbombardero, aunque pueden generarse más.
-Todos los enemigos se incluyen en una lista de enemigos inactivos (que posteriormente serán activados en intervalos de tiempo aleatorios). La generación de enemigos regulares se realiza en formaciones de 10 o 20, los enemigos rojos se generan en formaciones de 5 aviones y los bombarderos y superbombarderos se generan de manera individual.
+## Island
+
+The Island class represents an island in the game's background. It has the `move` method, which allows the island to move at a certain speed. Furthermore, the appearance of the island varies depending on its type, so an attribute is used to determine it.
+
+## Explosion
+
+The Explosion class is simple. It is initialized with coordinates and has a different appearance depending on the desired explosion type. For example, the explosion of a bomber will be much larger than that of a regular or red plane.
+
+
+# Description of used algorithms
+
+Several algorithms have been implemented in the game's development, which are explained in the following methods. The most relevant ones are shown, but additional algorithms have been implemented to meet the needs of each functionality. In addition to this, the `update` method of the Board class contains the necessary algorithms to generate and remove enemies, shots, and other objects such as explosions or islands that are generated during the game.
+
+## generate_enemies
+
+This method is found in the Board class and is responsible for generating enemies automatically and randomly, following the formation patterns and minimum number of each enemy type indicated in the requirements. At a minimum, it generates 20 regular planes, 5 red planes, 2 bombers, and 1 super bomber, although more can be generated.
+All enemies are included in an inactive enemy list (which will be activated at random time intervals). The generation of regular enemies is done in formations of 10 or 20, red enemies are generated in formations of 5 planes, and bombers and super bombers are generated individually.
 
 ## stop_game
-Este método se encuentra en la clase Board y se encarga de parar el juego en caso de que un usuario pierda una vida. El método cambia las variables de control requeridas para mostrar la pantalla correspondiente y acto seguido elimina todo el contenido de la pantalla y lo guarda en listas para que al volver al juego se puedan volver a mostrar. Para ello, se ha utilizado el método reset que se explicará a continuación.
+
+This method is found in the Board class and is responsible for stopping the game when a player loses a life. The method changes the required control variables to display the corresponding screen, and then it clears the entire screen content and stores it in lists so that it can be displayed again when returning to the game. To achieve this, the `reset` method is used, which will be explained next.
 
 ## reset
-El método reset pertenece a la clase Enemigo y, por tanto, es común a todos los enemigos del juego. Se encarga de establecer las coordenadas que se establecieron por primera vez en la generación del mismo al inicio del juego, de forma que este enemigo pueda volver a aparecer. Además, se establece la dirección que seguirán, la cuál coincide con la que usaron en un primer instante.
 
-## comprobar_colision
-Este método se encuentra tanto en la clase Plane como en cada clase hija de Enemigo. Se encarga de comparar las coordenadas de un objeto para determinar si existe una colisión y si se tiene que realizar una acción u otra.
+The `reset` method belongs to the Enemy class and, therefore, is common to all enemies in the game. It sets the coordinates to their initial values set during the enemy generation at the start of the game, allowing the enemy to reappear. Additionally, it sets the direction that they will follow, which is the same as the one they used initially.
+
+## check_collision
+
+This method is found in both the Plane class and each child class of Enemy. It compares the coordinates of two objects to determine if a collision exists and what action needs to be taken accordingly.
+
+
+# Functionalities
+
+The player can move using the arrow keys and shoot by pressing either the S key or the SPACE bar. The player can perform a loop by pressing the Z key. If a player's shot hits an enemy, the enemy is eliminated, and the score counter increases. On the other hand, if the player is hit by an enemy's shot or collides with an enemy, the player loses a life. All objects have animations, such as shot appearances, propeller movement, explosions, or appearance changes depending on the direction. It should be noted that enemy generation is done automatically and randomly, following formation patterns and the minimum number of each enemy type.
+
+In addition, several extra functionalities have been included. These are:
+- When all red planes are destroyed at once (5 red planes traveling together in formation), a bonus is received. The player will receive two extra loops and the ability to shoot double for a random number of seconds (never more than 5).
+- The game features background music during gameplay, as well as sound effects for shooting, being hit, colliding with another enemy, or shooting down enemies.
+- Various animations (screens) have been implemented throughout the game:
+  - Start animation: To begin the game, the player needs to press the ENTER key. They can choose to exit at any time by pressing the Q key or ESC key.
+  - Life lost animation: If the player is shot down or collides with another enemy, they lose a life, and the game pauses. If the player presses ENTER, they can resume the game with one less life. They can choose to exit at any time by pressing the Q key or ESC key.
+  - End animation: If the player loses all lives or wins, a final screen is displayed. If the player wins, the total score achieved is shown. They can choose to exit at any time by pressing the Q key or ESC key.
+
+# Known bugs
+
+Some bugs have been detected during the testing of the game which are detailed below and will be fixed in future versions:
+
+- There are some crash problems with shot collisions in specific cases.
+- The game may perform strangely when the player lives end and the user does not exit the game.
+
+Please report any other bugs you may find during the game's execution.
