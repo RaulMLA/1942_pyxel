@@ -1,15 +1,15 @@
-from enemigos import Enemigo
+from enemy import Enemy
 import random
 import config
 
 
-class EnemigoRojo(Enemigo):
+class RedEnemy(Enemy):
 
     def __init__(self, x: int, y: int):
-        '''Inicialización del enemigo rojo.'''
+        '''Inicialización del enemy red.'''
 
         super().__init__(x, y)
-        self.tipo = 'rojo'
+        self.tipo = 'red'
         self.direction = 'right'
 
         self.loops = random.randint(1, 3)
@@ -18,9 +18,9 @@ class EnemigoRojo(Enemigo):
         self.save_y = 0
         self.save_x = 0
 
-        self.lives = config.ENEMIGOS2_LIVES
-        self.speed = config.ENEMIGOS2_SPEED
-        self.score = config.ENEMIGOS2_SCORE
+        self.lives = config.ENEMIES2_LIVES
+        self.speed = config.ENEMIES2_SPEED
+        self.score = config.ENEMIES2_SCORE
     
 
     def move(self):
@@ -49,10 +49,10 @@ class EnemigoRojo(Enemigo):
                     self.direction = 'right'
 
 
-    def comprobar_colision(self, x: int, y: int, tipo: str) -> bool:
-        '''Método que comprueba si se impacta con el enemigo.'''
+    def check_colision(self, x: int, y: int, tipo: str) -> bool:
+        '''Método que comprueba si se impacta con el enemy.'''
 
-        if tipo == 'disparo':
+        if tipo == 'shot':
             if int(x) in range (int(self.x) - 11, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
                 self.lives -= 1
                 return True

@@ -12,21 +12,21 @@ class Explosion:
             self.index = 1
         elif tipo == 'regular':
             self.index = 0
-        elif tipo == 'rojo':
+        elif tipo == 'red':
             self.index = 0
-        elif tipo == 'bombardero':
+        elif tipo == 'bomber':
             self.index = 1
-        elif tipo == 'superbombardero':
+        elif tipo == 'superbomber':
             self.index = 2
         
         self.max = pyxel.frame_count + 7
         
         self.sprites = [
-            # Regular, rojo.
+            # Regular, red.
             (0, 105, 18, 14, 12),
-            # Avión, bombardero.
+            # Avión, bomber.
             (0, 216, 37, 31, 29),
-            # Superbombardero.
+            # superbomber.
             (0, 128, 94, 63, 48)
         ]
         

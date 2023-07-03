@@ -1,8 +1,8 @@
 from config import *
 
-class Disparo:
+class Shot:
     def __init__(self, x: int, y: int, tipo: str, direction: str):
-        '''Inicialización del disparo.'''
+        '''Inicialización del shot.'''
         self.x = x
         self.y = y
 
@@ -12,12 +12,12 @@ class Disparo:
             (0, 13, 18, 4, 4)
         ]
         self.sprite = self.sprites[0] if tipo == 'plane' else self.sprites[1]
-        self.speed = DISPARO_ENEMIGOS if tipo == 'enemigo' else PLAYER_DISPARO
+        self.speed = ENEMIES_SHOTS if tipo == 'enemy' else PLAYER_SHOTS
         self.direction = direction
 
 
     def move (self):
-        '''Método que define el movimiento de un disparo.'''
+        '''Método que define el movimiento de un shot.'''
 
         # Movimientos lineales.
         if self.direction == 'down':

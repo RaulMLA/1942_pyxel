@@ -1,23 +1,23 @@
 from config import *
 
 
-class Isla:
+class Island:
     def __init__(self, tipo: str):
-        '''Inicialización de la isla.'''
+        '''Inicialización de la island.'''
         self.x = 0
         self.y = 0
         self.tipo = tipo
 
         self.sprites = [
-            # Isla grande borde.
+            # island grande borde.
             (1, 1, 0, 105, 126),
-            # Isla pequeña 1.
+            # island pequeña 1.
             (1, 1, 127, 10, 9),
-            # Isla pequeña 2.
+            # island pequeña 2.
             (1, 12, 127, 12, 11),
-            # Isla pequeña 3.
+            # island pequeña 3.
             (1, 25, 127, 15, 15),
-            # Isla grande.
+            # island grande.
             (1, 107, 1, 114, 90)
         ]
 
@@ -43,7 +43,7 @@ class Isla:
             self.y = -250
         
     def move(self):
-        '''Movimiento de la isla.'''''
+        '''Movimiento de la island.'''''
         self.y += 1
 
         if self.y > BOARD_SIZE[1] + 10:

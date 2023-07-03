@@ -67,7 +67,7 @@ class Plane:
         self.sprite = self.sprites[self.index]
 
 
-    def comprobar_colision(self, x: int, y: int) -> bool:
+    def check_colision(self, x: int, y: int) -> bool:
         '''Método que comprueba si se impacta con el avión.'''
 
         if int(x) in range (int(self.x) - 0, int(self.x) + 25) and int(y) in range (int(self.y), int(self.y) + 16):

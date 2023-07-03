@@ -1,20 +1,20 @@
-from enemigos import Enemigo
+from enemy import Enemy
 import config
 import random
 
 
-class Superbombardero(Enemigo):
+class Superbomber(Enemy):
 
     def __init__(self, x: int, y: int):
-        '''Inicialización del enemigo superbombardero.'''
+        '''Inicialización del enemy superbomber.'''
 
         super().__init__(x, y)
-        self.tipo = 'superbombardero'
+        self.tipo = 'superbomber'
         self.direction = 'up'
 
-        self.lives = config.ENEMIGOS4_LIVES
-        self.speed = config.ENEMIGOS4_SPEED
-        self.score = config.ENEMIGOS4_SCORE
+        self.lives = config.ENEMIES4_LIVES
+        self.speed = config.ENEMIES4_SPEED
+        self.score = config.ENEMIES4_SCORE
 
         self.loops = random.randint(1, 2)
         self.next_loop = 110
@@ -24,7 +24,7 @@ class Superbombardero(Enemigo):
 
 
     def move(self):
-        '''Método que define el movimiento de un enemigo superbombardero.'''
+        '''Método que define el movimiento de un enemy superbomber.'''
 
         super().move()
 
@@ -50,10 +50,10 @@ class Superbombardero(Enemigo):
                     self.direction = 'up'
 
 
-    def comprobar_colision(self, x: int, y: int, tipo: str) -> bool:
-        '''Método que comprueba si se impacta con el enemigo.'''
+    def check_colision(self, x: int, y: int, tipo: str) -> bool:
+        '''Método que comprueba si se impacta con el enemy.'''
 
-        if tipo == 'disparo':
+        if tipo == 'shot':
             if int(x) in range (int(self.x) - 11, int(self.x) + 60) and int(y) in range (int(self.y), int(self.y) + 10):
                 self.lives -= 1
                 return True

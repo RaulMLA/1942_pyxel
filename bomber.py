@@ -1,25 +1,25 @@
-from enemigos import Enemigo
+from enemy import Enemy
 import config
 import random
 import pyxel
 
 
-class Bombardero(Enemigo):
+class Bomber(Enemy):
 
     def __init__(self, x: int, y: int):
-        '''Inicialización del enemigo bombardero.'''
+        '''Inicialización del enemy bomber.'''
 
         super().__init__(x, y)
-        self.tipo = 'bombardero'
+        self.tipo = 'bomber'
         self.direction = random.choice(['down', 'downleft', 'downright'])	
 
-        self.lives = config.ENEMIGOS3_LIVES
-        self.speed = config.ENEMIGOS3_SPEED
-        self.score = config.ENEMIGOS3_SCORE
+        self.lives = config.ENEMIES3_LIVES
+        self.speed = config.ENEMIES3_SPEED
+        self.score = config.ENEMIES3_SCORE
 
 
     def move(self):
-        '''Método que define el movimiento de un enemigo bombardero.'''
+        '''Método que define el movimiento de un enemy bomber.'''
 
         super().move()
 
@@ -27,10 +27,10 @@ class Bombardero(Enemigo):
             if self.y >= 150:
                 self.direction = random.choice(['up', 'upleft', 'upright'])
 
-    def comprobar_colision(self, x: int, y: int, tipo: str) -> bool:
-        '''Método que comprueba si se impacta con el enemigo.'''
+    def check_colision(self, x: int, y: int, tipo: str) -> bool:
+        '''Método que comprueba si se impacta con el enemy.'''
 
-        if tipo == 'disparo':
+        if tipo == 'shot':
             if int(x) in range (int(self.x) - 11, int(self.x) + 31) and int(y) in range (int(self.y), int(self.y) + 23):
                 self.lives -= 1
                 return True
