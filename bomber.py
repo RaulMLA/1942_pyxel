@@ -7,10 +7,10 @@ import pyxel
 class Bomber(Enemy):
 
     def __init__(self, x: int, y: int):
-        '''Inicialización del enemy bomber.'''
+        '''Enemy bomber initialization.'''
 
         super().__init__(x, y)
-        self.tipo = 'bomber'
+        self.type = 'bomber'
         self.direction = random.choice(['down', 'downleft', 'downright'])	
 
         self.lives = config.ENEMIES3_LIVES
@@ -19,7 +19,7 @@ class Bomber(Enemy):
 
 
     def move(self):
-        '''Método que define el movimiento de un enemy bomber.'''
+        '''Method that defines the movement of an enemy bomber.'''
 
         super().move()
 
@@ -27,14 +27,14 @@ class Bomber(Enemy):
             if self.y >= 150:
                 self.direction = random.choice(['up', 'upleft', 'upright'])
 
-    def check_colision(self, x: int, y: int, tipo: str) -> bool:
-        '''Método que comprueba si se impacta con el enemy.'''
+    def check_colision(self, x: int, y: int, type: str) -> bool:
+        '''Method that checks if it collides with the enemy.'''
 
-        if tipo == 'shot':
+        if type == 'shot':
             if int(x) in range (int(self.x) - 11, int(self.x) + 31) and int(y) in range (int(self.y), int(self.y) + 23):
                 self.lives -= 1
                 return True
-        # tipo == 'avion':
+        # type == 'plane':
         else:
             if int(x) in range (int(self.x) - 25, int(self.x) + 31) and int(y) in range (int(self.y), int(self.y) + 15):
                 self.lives -= 1

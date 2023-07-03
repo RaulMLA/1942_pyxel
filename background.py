@@ -3,18 +3,18 @@ from island import Island
 
 class Background:
     def __init__(self):
-        ''' Inicialización del background.'''
-        self.islas = []
+        '''Background initialization.'''
+        self.islands = []
 
-        # Islas predefinidas.
-        self.islas.append(Island('isla_grande_borde'))
-        self.islas.append(Island('isla_pequena_1'))
-        self.islas.append(Island('isla_pequena_2'))
-        self.islas.append(Island('isla_pequena_3'))
-        self.islas.append(Island('isla_grande'))
+        # Predifined islands.
+        self.islands.append(Island('border_big_island'))
+        self.islands.append(Island('small_island_1'))
+        self.islands.append(Island('small_island_2'))
+        self.islands.append(Island('small_island_3'))
+        self.islands.append(Island('big_island'))
 
 
     def move(self):
-        '''Movimiento del background.'''
-        for island in self.islas:
+        '''Background movement.'''
+        for island in self.islands:
             island.move()

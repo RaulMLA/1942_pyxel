@@ -2,21 +2,21 @@ import pyxel
 
 
 class Explosion:
-    def __init__(self, x, y, tipo):
-        '''Inicializa la explosión.'''
+    def __init__(self, x, y, type):
+        '''Explosion initialization.'''
 
         self.x = x
         self.y = y
         
-        if tipo == 'avion':
+        if type == 'plane':
             self.index = 1
-        elif tipo == 'regular':
+        elif type == 'regular':
             self.index = 0
-        elif tipo == 'red':
+        elif type == 'red':
             self.index = 0
-        elif tipo == 'bomber':
+        elif type == 'bomber':
             self.index = 1
-        elif tipo == 'superbomber':
+        elif type == 'superbomber':
             self.index = 2
         
         self.max = pyxel.frame_count + 7
@@ -24,9 +24,9 @@ class Explosion:
         self.sprites = [
             # Regular, red.
             (0, 105, 18, 14, 12),
-            # Avión, bomber.
+            # Plane, bomber.
             (0, 216, 37, 31, 29),
-            # superbomber.
+            # Superbomber.
             (0, 128, 94, 63, 48)
         ]
         

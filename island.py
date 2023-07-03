@@ -2,63 +2,63 @@ from config import *
 
 
 class Island:
-    def __init__(self, tipo: str):
-        '''Inicialización de la island.'''
+    def __init__(self, type: str):
+        '''Island initialization.'''
         self.x = 0
         self.y = 0
-        self.tipo = tipo
+        self.type = type
 
         self.sprites = [
-            # island grande borde.
+            # Big island border.
             (1, 1, 0, 105, 126),
-            # island pequeña 1.
+            # Small island 1.
             (1, 1, 127, 10, 9),
-            # island pequeña 2.
+            # Small island 2.
             (1, 12, 127, 12, 11),
-            # island pequeña 3.
+            # Small island 3.
             (1, 25, 127, 15, 15),
-            # island grande.
+            # Big island.
             (1, 107, 1, 114, 90)
         ]
 
-        if self.tipo == 'isla_grande_borde':
+        if self.type == 'border_big_island':
             self.sprite = self.sprites[0]
             self.x = 0
             self.y = -127
-        elif self.tipo == 'isla_pequena_1':
+        elif self.type == 'small_island_1':
             self.sprite = self.sprites[1]
             self.x = 160
             self.y = -10
-        elif self.tipo == 'isla_pequena_2':
+        elif self.type == 'small_island_2':
             self.sprite = self.sprites[2]
             self.x = 120
             self.y = -40
-        elif self.tipo == 'isla_pequena_3':
+        elif self.type == 'small_island_3':
             self.sprite = self.sprites[3]
             self.x = 210
             self.y = -30
-        elif self.tipo == 'isla_grande':
+        elif self.type == 'big_island':
             self.sprite = self.sprites[4]
             self.x = 130
             self.y = -250
         
     def move(self):
-        '''Movimiento de la island.'''''
+        '''Island movement.'''
         self.y += 1
 
         if self.y > BOARD_SIZE[1] + 10:
-            if self.tipo == 'isla_grande_borde':
+            if self.type == 'border_big_island':
                 self.x = 0
                 self.y = -127
-            elif self.tipo == 'isla_pequena_1':
+            elif self.type == 'small_island_1':
                 self.x = 160
                 self.y = -10
-            elif self.tipo == 'isla_pequena_2':
+            elif self.type == 'small_island_2':
                 self.x = 120
                 self.y = -40
-            elif self.tipo == 'isla_pequena_3':
+            elif self.type == 'small_island_3':
                 self.x = 210
                 self.y = -30
-            elif self.tipo == 'isla_grande':
+            elif self.type == 'big_island':
                 self.x = 130
                 self.y = -250

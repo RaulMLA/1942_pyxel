@@ -6,10 +6,10 @@ import config
 class RedEnemy(Enemy):
 
     def __init__(self, x: int, y: int):
-        '''Inicialización del enemy red.'''
+        '''Red enemy initialization.'''
 
         super().__init__(x, y)
-        self.tipo = 'red'
+        self.type = 'red'
         self.direction = 'right'
 
         self.loops = random.randint(1, 3)
@@ -24,6 +24,7 @@ class RedEnemy(Enemy):
     
 
     def move(self):
+        '''Method that defines the movement of an enemy red.'''
         
         super().move()
 
@@ -49,14 +50,14 @@ class RedEnemy(Enemy):
                     self.direction = 'right'
 
 
-    def check_colision(self, x: int, y: int, tipo: str) -> bool:
-        '''Método que comprueba si se impacta con el enemy.'''
+    def check_colision(self, x: int, y: int, type: str) -> bool:
+        '''Method that checks if it collides with the enemy.'''
 
-        if tipo == 'shot':
+        if type == 'shot':
             if int(x) in range (int(self.x) - 11, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
                 self.lives -= 1
                 return True
-        # tipo == 'avion':
+        # type == 'plane':
         else:
             if int(x) in range (int(self.x) - 25, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
                 self.lives -= 1

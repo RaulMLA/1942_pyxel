@@ -14,7 +14,7 @@ from config import *
 
 
 class Board:
-    '''Clase que representa el tablero.'''
+    '''Board class that represents the board.'''
 
     def __init__(self, w: int, h: int):
         '''Inicialización del tablero con sus medidas y carga del banco de imágenes.'''
@@ -130,21 +130,21 @@ class Board:
             if (pyxel.frame_count + 1) % self.random_number == 0 and len(self.enemigos_inactivos) > 0:
                 enemy = self.enemigos_inactivos.pop(0)
                 # Los enemies rojos se generan en grupos múltiplos de 5 y aparecen seguidos en el mismo intervalo de tiempo.
-                if enemy.tipo == 'red':
+                if enemy.type == 'red':
                     self.random_number = 10
                     if len(self.enemigos_inactivos) > 0:
-                        if self.enemigos_inactivos[0].tipo != 'red':
+                        if self.enemigos_inactivos[0].type != 'red':
                             self.random_number = random.randint(100, 300)
                 # Los enemies regulares se generan en grupos múltiplos de 10 y aparecen seguidos en el mismo intervalo de tiempo.
-                elif enemy.tipo == 'regular':
+                elif enemy.type == 'regular':
                     self.random_number = 20
                     if len(self.enemigos_inactivos) > 0:
-                        if self.enemigos_inactivos[0].tipo != 'regular':
+                        if self.enemigos_inactivos[0].type != 'regular':
                             self.random_number = random.randint(100, 300)
-                elif enemy.tipo == 'bomber':
+                elif enemy.type == 'bomber':
                     self.random_number = 100
                     if len(self.enemigos_inactivos) > 0:
-                        if self.enemigos_inactivos[0].tipo != 'bomber':
+                        if self.enemigos_inactivos[0].type != 'bomber':
                             self.random_number = random.randint(100, 300)    
                 else:
                     self.random_number = random.randint(100, 300)
@@ -155,104 +155,104 @@ class Board:
             # Creación de un shot por parte del jugador.
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
                 if self.bonus:
-                    self.plane.disparos.append(Shot(self.plane.x, self.plane.y, 'plane', 'up'))
-                    self.plane.disparos.append(Shot(self.plane.x + 15, self.plane.y, 'plane', 'up'))
+                    self.plane.shots.append(Shot(self.plane.x, self.plane.y, 'plane', 'up'))
+                    self.plane.shots.append(Shot(self.plane.x + 15, self.plane.y, 'plane', 'up'))
                 else:
-                    self.plane.disparos.append(Shot(self.plane.x + 7, self.plane.y, 'plane', 'up'))
+                    self.plane.shots.append(Shot(self.plane.x + 7, self.plane.y, 'plane', 'up'))
                 # Sonido de shot.
                 pyxel.play(1, 6)
 
-            # Movimiento de los disparos del jugador.
-            for i in range(len(self.plane.disparos)):
-                self.plane.disparos[i].move()
+            # Movimiento de los shots del jugador.
+            for i in range(len(self.plane.shots)):
+                self.plane.shots[i].move()
 
-            # Disparos y frecuencias dependiendo del tipo de enemy.
+            # Disparos y frecuencias dependiendo del type de enemy.
             for enemy in self.enemies:
                 # enemy regular.
-                if enemy.tipo == 'regular':
+                if enemy.type == 'regular':
                     if random.randint(1, 100) < 4 and enemy.direction != 'up':
-                        enemy.disparos.append(Shot(enemy.x + 5, enemy.y, 'enemy', enemy.direction))
+                        enemy.shots.append(Shot(enemy.x + 5, enemy.y, 'enemy', enemy.direction))
                 # enemy red.
-                elif enemy.tipo == 'red':
+                elif enemy.type == 'red':
                     if random.randint(1, 100) < 2:
-                        enemy.disparos.append(Shot(enemy.x + 10, enemy.y, 'enemy', enemy.direction))
+                        enemy.shots.append(Shot(enemy.x + 10, enemy.y, 'enemy', enemy.direction))
                 # enemy bomber.
-                elif enemy.tipo == 'bomber':
+                elif enemy.type == 'bomber':
                     if random.randint(1, 100) < 3 and enemy.direction not in ['up', 'upleft', 'upright']:
-                        enemy.disparos.append(Shot(enemy.x + 20, enemy.y, 'enemy', enemy.direction))
+                        enemy.shots.append(Shot(enemy.x + 20, enemy.y, 'enemy', enemy.direction))
                 # enemy superbomber.
-                elif enemy.tipo == 'superbomber':
+                elif enemy.type == 'superbomber':
                     if random.randint(1, 100) < 4 and enemy.y < 200:
                         # Se generan en grupos de 3 con diferentes direcciones.
-                        enemy.disparos.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'downleft'))
-                        enemy.disparos.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'down'))
-                        enemy.disparos.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'downright'))
+                        enemy.shots.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'downleft'))
+                        enemy.shots.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'down'))
+                        enemy.shots.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'downright'))
             
-                for shot in enemy.disparos:
+                for shot in enemy.shots:
                     shot.move()
 
             # Si el jugador tiene bonus de tiro doble, se elimina pasado un tiempo.
             if pyxel.frame_count % 250 == 0 and self.bonus:
                     self.bonus = False
 
-            # Eliminamos los disparos del avión que salen de la pantalla.
-            for shot in self.plane.disparos:
+            # Eliminamos los shots del avión que salen de la pantalla.
+            for shot in self.plane.shots:
                 if shot.y < -8:
-                    self.plane.disparos.remove(shot)
+                    self.plane.shots.remove(shot)
 
-            # Eliminamos los disparos de los enemies que salen de la pantalla.
+            # Eliminamos los shots de los enemies que salen de la pantalla.
             for enemy in self.enemies:
-                for shot in enemy.disparos:
+                for shot in enemy.shots:
                     if shot.y > self.height or shot.y < -8 or shot.x < -8 or shot.x > self.width:
-                        enemy.disparos.remove(shot)
+                        enemy.shots.remove(shot)
             
             # Eliminamos los enemies que salen de la pantalla.
             for enemy in self.enemies:
                 if enemy.y > self.height or enemy.y < -50 or enemy.x < -50 or enemy.x > self.width:
                     self.enemies.remove(enemy)
             
-            # Movimiento de las islas del background.
+            # Movimiento de las islands del background.
             self.background.move()
 
             # Movimiento de los enemies.
             for enemy in self.enemies:
                 enemy.move()
 
-            # Colisión entre disparos y enemies.
-            for shot in self.plane.disparos:
+            # Colisión entre shots y enemies.
+            for shot in self.plane.shots:
                 for enemy in self.enemies:
                     if enemy.check_colision(shot.x, shot.y, 'shot'):
-                        self.plane.disparos.remove(shot)
+                        self.plane.shots.remove(shot)
                         if enemy.lives <= 0:
                             # Comprobamos si es red y si se han destruido todos los rojos de una tanda para el bonus.
-                            if enemy.tipo == 'red':
+                            if enemy.type == 'red':
                                 self.red_counter += 1
                                 if self.red_counter == 5:
                                     self.bonus = True
                                     self.plane.loops += 2
                                     self.red_counter = 0
-                            elif enemy.tipo != 'red' and self.red_counter > 0:
+                            elif enemy.type != 'red' and self.red_counter > 0:
                                 self.red_counter = 0
                             # Efecto de sonido de destrucción de enemy.
                             pyxel.play(1, 5)
                             self.marcador_1up += enemy.score
                             self.enemies.remove(enemy)
-                            self.explosiones.append(Explosion(enemy.x, enemy.y, enemy.tipo))
+                            self.explosiones.append(Explosion(enemy.x, enemy.y, enemy.type))
             
-            # Colisión entre disparos y jugador.
+            # Colisión entre shots y jugador.
             for enemy in self.enemies:
-                for shot in enemy.disparos:
+                for shot in enemy.shots:
                     if self.plane.check_colision(shot.x, shot.y) and not self.plane.loop:
-                        enemy.disparos.remove(shot)
-                        self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'avion'))
+                        enemy.shots.remove(shot)
+                        self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'plane'))
                         # Efecto de sonido de shot acertado a enemy.
                         pyxel.play(1, 0)
                         self.stop_game()
             
             # Colisión entre jugador y enemies.
             for enemy in self.enemies:
-                if enemy.check_colision(self.plane.x, self.plane.y, 'avion') and not self.plane.loop:
-                    self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'avion'))
+                if enemy.check_colision(self.plane.x, self.plane.y, 'plane') and not self.plane.loop:
+                    self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'plane'))
                     # Efecto de sonido de colisión con enemy.
                     pyxel.play(1, 4)
                     self.stop_game()
@@ -276,8 +276,8 @@ class Board:
             # Color de background.
             pyxel.cls(1)
 
-            # Dibujamos las islas.
-            for island in self.background.islas:
+            # Dibujamos las islands.
+            for island in self.background.islands:
                 pyxel.blt(island.x, island.y, *island.sprite, colkey = 8)
 
             # Dibujamos los marcadores de puntuación.
@@ -298,13 +298,13 @@ class Board:
             for enemy in self.enemies:
                 pyxel.blt(enemy.x, enemy.y, *enemy.sprite, 8)
 
-            # Dibujamos los disparos de los enemies.
+            # Dibujamos los shots de los enemies.
             for enemy in self.enemies:
-                for shot in enemy.disparos:
+                for shot in enemy.shots:
                     pyxel.blt(shot.x, shot.y, *shot.sprite, 8)
 
-            # Dibujamos los disparos del avión.
-            for shot in self.plane.disparos:
+            # Dibujamos los shots del avión.
+            for shot in self.plane.shots:
                 pyxel.blt(shot.x, shot.y, *shot.sprite, 8)
 
             # Animación final.
@@ -415,7 +415,7 @@ class Board:
                 generar -= 1
 
         '''
-        # Se muestra en pantalla cuantos enemies de cada tipo se van a generar en el juego.
+        # Se muestra en pantalla cuantos enemies de cada type se van a generar en el juego.
         print('enemies QUE SE VAN A GENERAR')
         print('enemies regulares: ', count_enemigos_1)
         print('enemies rojos: ',  count_enemigos_2)
@@ -432,7 +432,7 @@ class Board:
         self.plane.lives -= 1
 
         copia_enemigos = self.enemies.copy()
-        self.plane.disparos = []
+        self.plane.shots = []
 
         for enemy in copia_enemigos:
             self.enemies.remove(enemy)

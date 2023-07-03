@@ -7,10 +7,10 @@ import pyxel
 class RegularEnemy(Enemy):
 
     def __init__(self, x: int, y: int):
-        '''Inicialización del enemy regular.'''
+        '''Regular enemy initialization.'''
 
         super().__init__(x, y)
-        self.tipo = 'regular'
+        self.type = 'regular'
         self.direction = random.choice(['down', 'downleft', 'downright'])
 
         self.lives = config.ENEMIES1_LIVES
@@ -19,7 +19,7 @@ class RegularEnemy(Enemy):
 
 
     def move(self):
-        '''Método que define el movimiento de un enemy regular.'''
+        '''Regular enemy movement method.'''
 
         super().move()
 
@@ -28,14 +28,14 @@ class RegularEnemy(Enemy):
                 self.direction = 'up'
 
 
-    def check_colision(self, x: int, y: int, tipo: str) -> bool:
-        '''Método que comprueba si se impacta con el enemy.'''
+    def check_colision(self, x: int, y: int, type: str) -> bool:
+        '''Method that checks if it collides with the enemy.'''
 
-        if tipo == 'shot':
+        if type == 'shot':
             if int(x) in range (int(self.x) - 11, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
                 self.lives -= 1
                 return True
-        # tipo == 'avion':
+        # type == 'plane':
         else:
             if int(x) in range (int(self.x) - 25, int(self.x) + 15) and int(y) in range (int(self.y), int(self.y) + 14):
                 self.lives -= 1

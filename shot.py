@@ -1,25 +1,25 @@
 from config import *
 
 class Shot:
-    def __init__(self, x: int, y: int, tipo: str, direction: str):
-        '''Inicialización del shot.'''
+    def __init__(self, x: int, y: int, type: str, direction: str):
+        '''Shot initialization.'''
         self.x = x
         self.y = y
 
-        # Sprites para las animaciones de los disparos.
+        # Sprites for shot animations.
         self.sprites = [
             (0, 1, 18, 11, 10),
             (0, 13, 18, 4, 4)
         ]
-        self.sprite = self.sprites[0] if tipo == 'plane' else self.sprites[1]
-        self.speed = ENEMIES_SHOTS if tipo == 'enemy' else PLAYER_SHOTS
+        self.sprite = self.sprites[0] if type == 'plane' else self.sprites[1]
+        self.speed = ENEMIES_SHOTS if type == 'enemy' else PLAYER_SHOTS
         self.direction = direction
 
 
     def move (self):
-        '''Método que define el movimiento de un shot.'''
+        '''Method that defines the movement of a shot.'''
 
-        # Movimientos lineales.
+        # Lineal movements.
         if self.direction == 'down':
             self.y += self.speed
         elif self.direction == 'up':
@@ -29,7 +29,7 @@ class Shot:
         elif self.direction == 'right':
             self.x += self.speed
         
-        # Movimientos diagonales.
+        # Diagonal movements.
         elif self.direction == 'upleft':
             self.x -= 0.6
             self.y -= self.speed
