@@ -17,173 +17,173 @@ class Board:
     '''Board class that represents the board.'''
 
     def __init__(self, w: int, h: int):
-        '''Inicialización del tablero con sus medidas y carga del banco de imágenes.'''
+        '''Board initialization with its measures and loading of the image bank.'''
 
-        # Dimensiones del tablero.
+        # Board dimensions.
         self.width = w
         self.height = h
 
-        # Marcadores de puntuación.
-        self.marcador_1up = 0
-        self.marcador_highscore = 40000
+        # Punctuation markers.
+        self.marker_1up = 0
+        self.marker_highscore = 40000
 
-        # Ventana y assets.
+        # Window and assets.
         pyxel.init(self.width, self.height, title = "1942")
         pyxel.load("assets/my_resource.pyxres")
 
-        # Posición inicial de nuestro jugador.
+        # Initial position of our player.
         self.plane = Plane(self.width / 2, 200)
 
-        # Metemos los distintos tipos de enemies en una lista.
+        # Append de enemies in a list.
         self.enemies = []
-        self.enemigos_inactivos = []
+        self.inactive_enemies = []
 
-        # Islas del background.
+        # Background islands.
         self.background = Background()
 
-        # Generamos los enemies.
-        self.generar_enemigos()
+        # Enemies generation.
+        self.generate_enemigos()
 
-        # Explosiones de los enemies.
-        self.explosiones = []
+        # Enemies explosions.
+        self.explosions = []
 
-        # Variable de control para la generación de enemies.
+        # Control variable for the generation of enemies.
         self.random_number = random.randint(50, 100)
 
-        # Variable de control para el bonus por eliminar enemies rojos.
+        # Control variable for the bonus for destroying red enemies.
         self.bonus = False
 
-        # Contador para comprobar el número de enemies rojos destruidos para el bonus.
+        # Counter to check the number of red enemies destroyed for the bonus.
         self.red_counter = 0
 
-        # Música de background.
+        # Background music.
         pyxel.play(0, 1, 1, True)
         pyxel.play(0, 2, 1, True)
         pyxel.play(0, 3, 1, True)
 
-        # Condición de inicio del juego.
+        # Initial condition of the game.
         self.start_condition = False
 
-        # El jugador ha perdido una vida.
+        # Player has lost a life.
         self.loose_life = False
 
-        # El jugador ha perdido la partida.
+        # Player has lost the game.
         self.loose = False
 
-        # Ejecutamos el juego.
+        # We run the game.
         pyxel.run(self.update, self.draw)
 
 
     def update(self):
         '''
-        Método que actualiza el estado del tablero.
-        (*) Hay bucles de enemies que se podrían optimizar fusionándolos en uno solo,
-        pero se han considerado separados para facilitar la lectura y comprensión del código.
+        Method that updates the state of the board.
+        (*) There are enemy loops that could be optimized by merging them into one,
+        but they have been considered separate to facilitate reading and understanding of the code.
         '''
 
-        # Letra ENTER para empezar a jugar.
+        # ENTER key to start playing.
         if pyxel.btnp(pyxel.KEY_RETURN):
             self.start_condition = True
 
-        # Jugador sale del juego pulsando la tecla Q.
+        # Q key to quit the game.
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
-        # Control de explosiones.
-        for explosion in self.explosiones:
+        # Explosions control.
+        for explosion in self.explosions:
             if explosion.max < pyxel.frame_count:
-                self.explosiones.remove(explosion)
+                self.explosions.remove(explosion)
         
         if self.start_condition:
-            # Reestablecemos la configuración si el usuario ha perdido una vida.
+            # Configurations are restored if the user has lost a life.
             if self.loose_life:
                 self.random_number = random.randint(50, 100)
                 self.plane.x = self.width / 2
                 self.plane.y = 200
                 self.loose_life = False
 
-            # Movimiento del jugador (derecha e izquierda).
+            # Player movement (right and left).
             if pyxel.btn(pyxel.KEY_RIGHT):
                 self.plane.move('right', self.width)
             elif pyxel.btn(pyxel.KEY_LEFT):
                 self.plane.move('left', self.width)
             
-            # Movimiento del jugador (arriba y abajo).
+            # Player movement (up and down).
             if pyxel.btn(pyxel.KEY_UP):
                 self.plane.move('up', self.width)
             elif pyxel.btn(pyxel.KEY_DOWN):
                 self.plane.move('down', self.width)
 
-            # Movimiento loop del jugador para evitar ser abatido.
+            # Player loop movement to avoid being shot down.
             if pyxel.btn(pyxel.KEY_Z):
                 if self.plane.loops > 0:
                     self.plane.make_loop()
                 
-            # Tiempo máximo que dura un loop.
+            # Maximum time a loop lasts.
             if self.plane.make_loop:
                 if pyxel.frame_count % 45 == 0:
                     if self.plane.loop:
                         self.plane.loops -= 1
                         self.plane.loop = False    
 
-            # Puesta en marcha de los enemies.
-            if (pyxel.frame_count + 1) % self.random_number == 0 and len(self.enemigos_inactivos) > 0:
-                enemy = self.enemigos_inactivos.pop(0)
-                # Los enemies rojos se generan en grupos múltiplos de 5 y aparecen seguidos en el mismo intervalo de tiempo.
+            # Enemies are activated.
+            if (pyxel.frame_count + 1) % self.random_number == 0 and len(self.inactive_enemies) > 0:
+                enemy = self.inactive_enemies.pop(0)
+                # Red enemies are generated in groups of 5 and appear in the same interval of time.
                 if enemy.type == 'red':
                     self.random_number = 10
-                    if len(self.enemigos_inactivos) > 0:
-                        if self.enemigos_inactivos[0].type != 'red':
+                    if len(self.inactive_enemies) > 0:
+                        if self.inactive_enemies[0].type != 'red':
                             self.random_number = random.randint(100, 300)
-                # Los enemies regulares se generan en grupos múltiplos de 10 y aparecen seguidos en el mismo intervalo de tiempo.
+                # Regular enemies are generated in groups of 10 and appear in the same interval of time.
                 elif enemy.type == 'regular':
                     self.random_number = 20
-                    if len(self.enemigos_inactivos) > 0:
-                        if self.enemigos_inactivos[0].type != 'regular':
+                    if len(self.inactive_enemies) > 0:
+                        if self.inactive_enemies[0].type != 'regular':
                             self.random_number = random.randint(100, 300)
                 elif enemy.type == 'bomber':
                     self.random_number = 100
-                    if len(self.enemigos_inactivos) > 0:
-                        if self.enemigos_inactivos[0].type != 'bomber':
+                    if len(self.inactive_enemies) > 0:
+                        if self.inactive_enemies[0].type != 'bomber':
                             self.random_number = random.randint(100, 300)    
                 else:
                     self.random_number = random.randint(100, 300)
                 
-                # Ponemos en funcionamiento al enemy.
+                # Enemy is activated.
                 self.enemies.append(enemy)
 
-            # Creación de un shot por parte del jugador.
+            # Shot creation by the player.
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_S):
                 if self.bonus:
                     self.plane.shots.append(Shot(self.plane.x, self.plane.y, 'plane', 'up'))
                     self.plane.shots.append(Shot(self.plane.x + 15, self.plane.y, 'plane', 'up'))
                 else:
                     self.plane.shots.append(Shot(self.plane.x + 7, self.plane.y, 'plane', 'up'))
-                # Sonido de shot.
+                # Shot sound.
                 pyxel.play(1, 6)
 
-            # Movimiento de los shots del jugador.
+            # Player shot movement.
             for i in range(len(self.plane.shots)):
                 self.plane.shots[i].move()
 
-            # Disparos y frecuencias dependiendo del type de enemy.
+            # Shot movement and frequency depending on the type of enemy.
             for enemy in self.enemies:
-                # enemy regular.
+                # Regular enenmies.
                 if enemy.type == 'regular':
                     if random.randint(1, 100) < 4 and enemy.direction != 'up':
                         enemy.shots.append(Shot(enemy.x + 5, enemy.y, 'enemy', enemy.direction))
-                # enemy red.
+                # Red enemies.
                 elif enemy.type == 'red':
                     if random.randint(1, 100) < 2:
                         enemy.shots.append(Shot(enemy.x + 10, enemy.y, 'enemy', enemy.direction))
-                # enemy bomber.
+                # Bomber enemies.
                 elif enemy.type == 'bomber':
                     if random.randint(1, 100) < 3 and enemy.direction not in ['up', 'upleft', 'upright']:
                         enemy.shots.append(Shot(enemy.x + 20, enemy.y, 'enemy', enemy.direction))
-                # enemy superbomber.
+                # Superbomber enemies.
                 elif enemy.type == 'superbomber':
                     if random.randint(1, 100) < 4 and enemy.y < 200:
-                        # Se generan en grupos de 3 con diferentes direcciones.
+                        # Generate in groups of 3 with different directions.
                         enemy.shots.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'downleft'))
                         enemy.shots.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'down'))
                         enemy.shots.append(Shot(enemy.x + 30, enemy.y + 30, 'enemy', 'downright'))
@@ -191,40 +191,40 @@ class Board:
                 for shot in enemy.shots:
                     shot.move()
 
-            # Si el jugador tiene bonus de tiro doble, se elimina pasado un tiempo.
+            # If the player has double shot bonus, it is removed after a while.
             if pyxel.frame_count % 250 == 0 and self.bonus:
                     self.bonus = False
 
-            # Eliminamos los shots del avión que salen de la pantalla.
+            # Plane shots are removed when they leave the screen.
             for shot in self.plane.shots:
                 if shot.y < -8:
                     self.plane.shots.remove(shot)
 
-            # Eliminamos los shots de los enemies que salen de la pantalla.
+            # Enemy shots are removed when they leave the screen.
             for enemy in self.enemies:
                 for shot in enemy.shots:
                     if shot.y > self.height or shot.y < -8 or shot.x < -8 or shot.x > self.width:
                         enemy.shots.remove(shot)
             
-            # Eliminamos los enemies que salen de la pantalla.
+            # Enemy is removed when it leaves the screen.
             for enemy in self.enemies:
                 if enemy.y > self.height or enemy.y < -50 or enemy.x < -50 or enemy.x > self.width:
                     self.enemies.remove(enemy)
             
-            # Movimiento de las islands del background.
+            # Background islands movement.
             self.background.move()
 
-            # Movimiento de los enemies.
+            # Enemies movement.
             for enemy in self.enemies:
                 enemy.move()
 
-            # Colisión entre shots y enemies.
+            # Colision between shots and enemies.
             for shot in self.plane.shots:
                 for enemy in self.enemies:
                     if enemy.check_colision(shot.x, shot.y, 'shot'):
                         self.plane.shots.remove(shot)
                         if enemy.lives <= 0:
-                            # Comprobamos si es red y si se han destruido todos los rojos de una tanda para el bonus.
+                            # We check if it is red and if all the reds of a batch have been destroyed for the bonus.
                             if enemy.type == 'red':
                                 self.red_counter += 1
                                 if self.red_counter == 5:
@@ -233,87 +233,87 @@ class Board:
                                     self.red_counter = 0
                             elif enemy.type != 'red' and self.red_counter > 0:
                                 self.red_counter = 0
-                            # Efecto de sonido de destrucción de enemy.
+                            # Explosion sound.
                             pyxel.play(1, 5)
-                            self.marcador_1up += enemy.score
+                            self.marker_1up += enemy.score
                             self.enemies.remove(enemy)
-                            self.explosiones.append(Explosion(enemy.x, enemy.y, enemy.type))
+                            self.explosions.append(Explosion(enemy.x, enemy.y, enemy.type))
             
-            # Colisión entre shots y jugador.
+            # Colision between shots and player.
             for enemy in self.enemies:
                 for shot in enemy.shots:
                     if self.plane.check_colision(shot.x, shot.y) and not self.plane.loop:
                         enemy.shots.remove(shot)
-                        self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'plane'))
-                        # Efecto de sonido de shot acertado a enemy.
+                        self.explosions.append(Explosion(self.plane.x, self.plane.y, 'plane'))
+                        # Sound effect of shot hit enemy.
                         pyxel.play(1, 0)
                         self.stop_game()
             
-            # Colisión entre jugador y enemies.
+            # Colision between player and enemies.
             for enemy in self.enemies:
                 if enemy.check_colision(self.plane.x, self.plane.y, 'plane') and not self.plane.loop:
-                    self.explosiones.append(Explosion(self.plane.x, self.plane.y, 'plane'))
-                    # Efecto de sonido de colisión con enemy.
+                    self.explosions.append(Explosion(self.plane.x, self.plane.y, 'plane'))
+                    # Enemy collision sound effect.
                     pyxel.play(1, 4)
                     self.stop_game()
 
-            # Animación del avión.
+            # Plane animation.
             self.plane.animation()
 
-            # Animación de los enemies.
+            # Enemies animation.
             for i in range (len(self.enemies)):
                 self.enemies[i].animation()
     
 
     def draw(self):
-        '''Método que permite dibujar cada elemento en la ventana.'''
+        '''Method that allows to draw each element in the window.'''
 
         if self.start_condition:
 
-            # Imagen de background.
+            # Background image.
             #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
-            # Color de background.
+            # Background color.
             pyxel.cls(1)
 
-            # Dibujamos las islands.
+            # Islands are drawn.
             for island in self.background.islands:
                 pyxel.blt(island.x, island.y, *island.sprite, colkey = 8)
 
-            # Dibujamos los marcadores de puntuación.
+            # Punctuation markers are drawn.
             pyxel.text(15, 5, "1 U P", 7)
             pyxel.text(60, 5, "H I G H  S C O R E", 10)
             pyxel.text(155, 5, "L O O P S", 11)
             pyxel.text(210, 5, "L I V E S", 14)
 
-            pyxel.text(15, 15, str(self.marcador_1up), 13)
-            pyxel.text(60, 15, str(self.marcador_highscore), 13)
+            pyxel.text(15, 15, str(self.marker_1up), 13)
+            pyxel.text(60, 15, str(self.marker_highscore), 13)
             pyxel.text(155, 15, str(self.plane.loops), 13)
             pyxel.text(210, 15, str(self.plane.lives), 13)
 
-            # Dibujamos el avión.
+            # Plane is drawn.
             pyxel.blt(self.plane.x, self.plane.y, *self.plane.sprite, colkey = 8)
 
-            # Dibujamos los enemies.
+            # Enemies are drawn.
             for enemy in self.enemies:
                 pyxel.blt(enemy.x, enemy.y, *enemy.sprite, 8)
 
-            # Dibujamos los shots de los enemies.
+            # Enemy shots are drawn.
             for enemy in self.enemies:
                 for shot in enemy.shots:
                     pyxel.blt(shot.x, shot.y, *shot.sprite, 8)
 
-            # Dibujamos los shots del avión.
+            # Plane shots are drawn.
             for shot in self.plane.shots:
                 pyxel.blt(shot.x, shot.y, *shot.sprite, 8)
 
-            # Animación final.
+            # Final animation.
             if self.plane.lives == 0:
                 self.loose = True
-                # Imagen de background.
+                # Background image.
                 #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
-                # Color de background.
+                # Background color.
                 pyxel.cls(1)
 
                 pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
@@ -321,29 +321,29 @@ class Board:
                 pyxel.text(105, 152, 'YOU LOOSE', 7)
                 pyxel.blt(95, 188, 0, 1, 192, 64, 16, colkey = 8)
 
-            if len(self.enemigos_inactivos) == 0 and len(self.enemies) == 0 and not self.loose:
-                # Imagen de background.
+            if len(self.inactive_enemies) == 0 and len(self.enemies) == 0 and not self.loose:
+                # Background image.
                 #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
-                # Color de background.
+                # Background color.
                 pyxel.cls(1)
 
                 pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
                 pyxel.text(93, 125, '--- GAME OVER ---', 7)
                 pyxel.text(108, 152, 'YOU WIN', 7)
-                pyxel.text(99, 164, 'SCORE: ' + str(self.marcador_1up), 7)
+                pyxel.text(99, 164, 'SCORE: ' + str(self.marker_1up), 7)
                 pyxel.blt(95, 200, 0, 1, 192, 64, 16, colkey = 8)
         
-        # Dibujamos las explosiones.
-        for explosion in self.explosiones:
+        # Explosions are drawn.
+        for explosion in self.explosions:
             pyxel.blt(explosion.x, explosion.y, *explosion.sprite, 8)
 
-        # Animación inicial.
+        # Initial animation.
         if not self.start_condition and not self.loose and not self.loose_life:
-            # Imagen de background.
+            # Background image.
             #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
-            # Color de background.
+            # Background color.
             pyxel.cls(1)
 
             pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
@@ -351,12 +351,12 @@ class Board:
             pyxel.text(55, 152, '>> PRESS ESC OR Q TO QUIT THE GAME', 7)
             pyxel.blt(95, 190, 0, 1, 192, 64, 16, colkey = 8)
         
-        # Animación cuando el jugador pierde una vida.
+        # Animations when the player loses a life.
         if self.loose_life:
-            # Imagen de background.
+            # Background image.
             #pyxel.blt(0, 0, 2, 0, 0, 255, 255, colkey = 8)
 
-            # Color de background.
+            # Background color.
             #pyxel.cls(1)
 
             pyxel.blt(40, 50, 0, 1, 209, 177, 45, colkey = 8)
@@ -366,76 +366,76 @@ class Board:
             pyxel.blt(95, 190, 0, 1, 192, 64, 16, colkey = 8)
 
 
-    def generar_enemigos(self):
-        '''Método para generar los enemies siguiendo una distribución aleatoria.'''
+    def generate_enemigos(self):
+        '''Method for generating enemies following a random distribution.'''
 
-        count_enemigos_1 = 0    # Variable para asegurarnos de contar con el número mínimo de enemies regulaares.
-        count_enemigos_2 = 0    # Variable para asegurarnos de contar con el número mínimo de enemies rojos.
-        count_enemigos_3 = 0    # Variable para asegurarnos de contar con el número mínimo de enemies bombarderos.
-        count_enemigos_4 = 0    # Variable para asegurarnos de contar con el número mínimo de enemies superbombarderos.
+        enemy_1_count = 0    # Variable to ensure that we have the minimum number of regular enemies.
+        enemy_2_count = 0    # Variable to ensure that we have the minimum number of red enemies.
+        enemy_3_count = 0    # Variable to ensure that we have the minimum number of bomber enemies.
+        enemy_4_count = 0    # Variable to ensure that we have the minimum number of superbomber enemies.
 
         
-        while (count_enemigos_1 < ENEMIES1_MIN) or (count_enemigos_2 < ENEMIES2_MIN) or (count_enemigos_3 < ENEMIES3_MIN) or (count_enemigos_4 < ENEMIES4_MIN):
-            # Generación de enemies regulares (formaciones de 10 o 20).
-            generar = random.randrange(0, 21, 10)
-            count_enemigos_1 += generar
-            while generar != 0:
+        while (enemy_1_count < ENEMIES1_MIN) or (enemy_2_count < ENEMIES2_MIN) or (enemy_3_count < ENEMIES3_MIN) or (enemy_4_count < ENEMIES4_MIN):
+            # Regular enemies are generated (formations of 10 or 20).
+            generate = random.randrange(0, 21, 10)
+            enemy_1_count += generate
+            while generate != 0:
                 random_position = random.randint(16, self.width - 16)
-                self.enemigos_inactivos.append(RegularEnemy(random_position, -15))
-                generar -= 1
+                self.inactive_enemies.append(RegularEnemy(random_position, -15))
+                generate -= 1
             
-            # Generación de enemies rojos (formación de 5).
-            generar = random.randrange(0, 6, 5)
-            if generar != 0:
+            # Red enemies are generated (formations of 5).
+            generate = random.randrange(0, 6, 5)
+            if generate != 0:
                 counter = 5
                 random_position = random.randint(80, self.height - 80)
                 enemigo_1 = RedEnemy(-15, random_position)
                 
                 while counter > 0:
                     enemy = copy.deepcopy(enemigo_1)
-                    self.enemigos_inactivos.append(enemy)
+                    self.inactive_enemies.append(enemy)
                     counter -= 1
 
-                count_enemigos_2 += generar
+                enemy_2_count += generate
 
-            # Generación de bombarderos (se generan de manera individual).
-            generar = random.randint(0, 3)
-            count_enemigos_3 += generar
-            while generar != 0:
+            # Bombers are generated (individual).
+            generate = random.randint(0, 3)
+            enemy_3_count += generate
+            while generate != 0:
                 random_position = random.randint(30, self.width - 30)
-                self.enemigos_inactivos.append(Bomber(random_position, -24))
-                generar -= 1
+                self.inactive_enemies.append(Bomber(random_position, -24))
+                generate -= 1
             
-            # Generación de superbombarderos (se generan de manera individual).
-            generar = random.randint(0, 1)
-            count_enemigos_4 += generar
-            while generar != 0:
+            # Superbombers are generated (individual).
+            generate = random.randint(0, 1)
+            enemy_4_count += generate
+            while generate != 0:
                 random_position = random.randint(70, self.width - 70)
-                self.enemigos_inactivos.append(Superbomber(random_position, self.height + 1))
-                generar -= 1
+                self.inactive_enemies.append(Superbomber(random_position, self.height + 1))
+                generate -= 1
 
         '''
-        # Se muestra en pantalla cuantos enemies de cada type se van a generar en el juego.
-        print('enemies QUE SE VAN A GENERAR')
-        print('enemies regulares: ', count_enemigos_1)
-        print('enemies rojos: ',  count_enemigos_2)
-        print('Bombarderos: ', count_enemigos_3)
-        print('Superbombarderos: ', count_enemigos_4)
+        # Test for enemies generation.
+        print('enemies THAT WILL BE GENERATED')
+        print('Regular enemies: ', enemy_1_count)
+        print('Red enemies: ',  enemy_2_count)
+        print('Bombers: ', enemy_3_count)
+        print('Superbombers: ', enemy_4_count)
         '''
 
 
     def stop_game(self):
-        '''Método para detener el juego si el usuario pierde una vida.'''
+        '''Method to stop the game if the user loses a life.'''
 
         self.loose_life = True
         self.start_condition = False
         self.plane.lives -= 1
 
-        copia_enemigos = self.enemies.copy()
+        enemies_copy = self.enemies.copy()
         self.plane.shots = []
 
-        for enemy in copia_enemigos:
+        for enemy in enemies_copy:
             self.enemies.remove(enemy)
             enemy.reset()
-            self.enemigos_inactivos.append(enemy)
+            self.inactive_enemies.append(enemy)
         
